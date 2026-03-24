@@ -64,16 +64,15 @@ interface BudgetCardProps {
   unit?: string;
   selected: boolean;
   onClick: () => void;
-  small?: boolean;
 }
 
-export const BudgetCard = ({ amount, unit = 'บาท', selected, onClick, small }: BudgetCardProps) => (
+export const BudgetCard = ({ amount, unit = 'บาท', selected, onClick }: BudgetCardProps) => (
   <div onClick={onClick}>
     <div className={`budget-card-inner ${selected ? 'selected' : ''}`}>
-      <div className={`font-heading font-bold ${small ? 'text-[13px]' : 'text-[17px]'} ${selected ? 'text-primary' : 'text-foreground/80'}`}>
+      <div className={`font-heading font-bold text-[17px] ${selected ? 'text-primary' : 'text-foreground/80'}`}>
         {amount}
       </div>
-      {unit && !small && <div className="text-[10px] text-muted-foreground/60 mt-0.5">{unit}</div>}
+      <div className="text-[10px] text-muted-foreground/60 mt-0.5">{unit || '\u00A0'}</div>
     </div>
   </div>
 );

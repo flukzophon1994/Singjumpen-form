@@ -20,7 +20,7 @@ const budgetOptions = [
 
 const Section4Budget = ({ data, update }: Props) => {
   const size = data.signWidth && data.signHeight ? `${data.signWidth} × ${data.signHeight} cm` : '—';
-  const budgetDisplay = data.budgetCustom || (data.budget && data.budget !== 'other' ? `${data.budget.replace('000', 'K')} บาท` : '—');
+  const budgetDisplay = data.budgetCustom || (data.budget && data.budget !== 'other' ? `${parseInt(data.budget) / 1000}K บาท` : '—');
 
   const summaryRows = [
     ['ชื่อ-นามสกุล', data.name],
@@ -32,7 +32,7 @@ const Section4Budget = ({ data, update }: Props) => {
     ['ข้อความบนป้าย', data.signText],
     ['โลโก้', getLabel('logo', data.logo)],
     ['ขนาดป้าย', size],
-    ['ความสูงตัวอักษร', data.letterHeight],
+    ['ความสูงตัวอักษร', data.letterHeight === 'ระบุเอง' ? data.letterHeightCustom : data.letterHeight],
     ['สีไฟ', getLabel('lightColor', data.lightColor)],
     ['ขอบตัวอักษร', getLabel('borderMaterial', data.borderMaterial)],
     ['Timer', getLabel('timer', data.timer)],
@@ -62,10 +62,12 @@ const Section4Budget = ({ data, update }: Props) => {
         <FieldGroup label="ช่วงงบประมาณโดยประมาณ" required>
           <div className="grid grid-cols-4 gap-2 max-[380px]:grid-cols-3">
             {budgetOptions.map(o => (
-              <BudgetCard key={o.v} amount={o.label} selected={data.budget === o.v} onClick={() => update('budget', o.v)} small={o.v === 'other'} unit={o.v === 'other' ? '' : 'บาท'} />
+              <BudgetCard key={o.v} amount={o.label} selected={data.budget === o.v} onClick={() => update('budget', o.v)} unit={o.v === 'other' ? '' : 'บาท'} />
             ))}
           </div>
-          <input type="text" className="form-input mt-2.5" placeholder="ระบุงบประมาณ (บาท)" value={data.budgetCustom} onChange={e => update('budgetCustom', e.target.value)} />
+          {data.budget === 'other' && (
+            <input type="text" className="form-input mt-2.5" placeholder="ระบุงบประมาณ (บาท)" value={data.budgetCustom} onChange={e => update('budgetCustom', e.target.value)} />
+          )}
         </FieldGroup>
 
         <FieldGroup label="รวมค่าติดตั้ง">

@@ -9,7 +9,7 @@ import NavBar from '@/components/sign-form/NavBar';
 import { useSignForm } from '@/components/sign-form/useSignForm';
 
 const Index = () => {
-  const { step, data, update, goTo, next, prev, submitted } = useSignForm();
+  const { step, data, update, goTo, next, prev, submitted, isSubmitting, submitError } = useSignForm();
 
   return (
     <div className="min-h-screen bg-background">
@@ -24,7 +24,14 @@ const Index = () => {
             {step === 3 && <Section3Install data={data} update={update} />}
             {step === 4 && <Section4Budget data={data} update={update} />}
           </main>
-          <NavBar step={step} totalSteps={4} onBack={prev} onNext={next} />
+          <NavBar
+            step={step}
+            totalSteps={4}
+            onBack={prev}
+            onNext={next}
+            isSubmitting={isSubmitting}
+            submitError={submitError}
+          />
         </>
       )}
 

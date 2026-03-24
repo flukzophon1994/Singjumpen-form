@@ -14,6 +14,7 @@ export interface SignFormData {
   signWidth: string;
   signHeight: string;
   letterHeight: string;
+  letterHeightCustom: string;
   lightColor: string;
   lightColorCustom: string;
   borderMaterial: string;
@@ -34,7 +35,7 @@ export interface SignFormData {
 const initialData: SignFormData = {
   email: '', name: '', phone: '', lineId: '', shopName: '', address: '',
   designFile: '', designNote: '', signText: '', logo: '',
-  signWidth: '', signHeight: '', letterHeight: '', lightColor: '', lightColorCustom: '',
+  signWidth: '', signHeight: '', letterHeight: '', letterHeightCustom: '', lightColor: '', lightColorCustom: '',
   borderMaterial: '', timer: '', installHeight: '', installMethod: '',
   wallType: '', mountType: '', oldSign: '', sitePhoto: '',
   budget: '', budgetCustom: '', includeInstall: '', deadline: '', note: '',
@@ -44,6 +45,8 @@ export const useSignForm = () => {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<SignFormData>(initialData);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const update = (field: keyof SignFormData, value: string) => {
     setData(prev => ({ ...prev, [field]: value }));
@@ -53,9 +56,96 @@ export const useSignForm = () => {
     if (n <= step) setStep(n);
   };
 
+  // Convert camelCase to snake_case for API
+  const toSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+
+  const submitForm = async () => {
+    // Prevent double submission
+    if (isSubmitting || submitted) return;
+    
+    setIsSubmitting(true);
+    setSubmitError(null);
+    
+    try {
+      // Determine budget amount: use custom if "other" is selected, otherwise use selected budget
+      const budgetAmount = data.budget === 'other' ? data.budgetCustom : data.budget;
+      
+      // Determine letter height: use custom if "ระบุเอง" is selected, otherwise use selected value
+      const letterHeightValue = data.letterHeight === 'ระบุเอง' ? data.letterHeightCustom : data.letterHeight;
+      
+      // Send only the fields that exist in the database
+      const apiData = {
+        email: data.email,
+        name: data.name,
+        phone: data.phone,
+        line_id: data.lineId,
+        shop_name: data.shopName,
+        address: data.address,
+        design_file: data.designFile,
+        design_note: data.designNote,
+        sign_text: data.signText,
+        logo_included: data.logo,
+        sign_width_cm: data.signWidth,
+        sign_height_cm: data.signHeight,
+        letter_height: letterHeightValue,
+        light_color: data.lightColor,
+        light_color_custom: data.lightColorCustom,
+        border_material: data.borderMaterial,
+        timer_included: data.timer,
+        install_height: data.installHeight,
+        install_method: data.installMethod,
+        wall_type: data.wallType,
+        mount_type: data.mountType,
+        old_sign_exists: data.oldSign,
+        site_photo: data.sitePhoto,
+        budget_amount: budgetAmount,
+        include_installation: data.includeInstall,
+        deadline: data.deadline,
+        additional_notes: data.note,
+      };
+
+      const response = await fetch('http://192.168.202.155:3000/api/quotes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(apiData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('API Error Response:', errorData);
+        const errorMessage = errorData.message || errorData.error || `HTTP error! status: ${response.status}`;
+        throw new Error(errorMessage);
+      }
+      
+      setSubmitted(true);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitError(error instanceof Error ? error.message : 'เกิดข้อผิดพลาดในการส่งข้อมูล');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const next = () => {
+    // #region agent log
+    fetch('http://127.0.0.1:7908/ingest/bc630f05-7678-40d7-a0c3-f1e3125dc587',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'e7c16c'},body:JSON.stringify({sessionId:'e7c16c',runId:'pre-fix',hypothesisId:'H1',location:'useSignForm.ts:next:entry',message:'next invoked',data:{step,submitted,requiredSnapshot:{email:!!data.email,name:!!data.name,phone:!!data.phone,shopName:!!data.shopName,signText:!!data.signText,installHeight:!!data.installHeight,budget:!!data.budget,deadline:!!data.deadline}},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
     if (step < 4) setStep(step + 1);
-    else setSubmitted(true);
+    if (step < 4) {
+      // #region agent log
+      fetch('http://127.0.0.1:7908/ingest/bc630f05-7678-40d7-a0c3-f1e3125dc587',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'e7c16c'},body:JSON.stringify({sessionId:'e7c16c',runId:'pre-fix',hypothesisId:'H2',location:'useSignForm.ts:next:step-advance',message:'advance step without submit',data:{fromStep:step,toStep:step+1},timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
+    } else {
+      // #region agent log
+      fetch('http://127.0.0.1:7908/ingest/bc630f05-7678-40d7-a0c3-f1e3125dc587',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'e7c16c'},body:JSON.stringify({sessionId:'e7c16c',runId:'pre-fix',hypothesisId:'H3',location:'useSignForm.ts:next:submit-branch',message:'setSubmitted called',data:{step,willSubmit:true,hasNetworkSubmit:false},timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
+      submitForm();
+    }
+    // #region agent log
+    fetch('http://127.0.0.1:7908/ingest/bc630f05-7678-40d7-a0c3-f1e3125dc587',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'e7c16c'},body:JSON.stringify({sessionId:'e7c16c',runId:'pre-fix',hypothesisId:'H4',location:'useSignForm.ts:next:exit',message:'next completed',data:{stepAtExit:step,submittedAtExit:submitted},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -64,7 +154,7 @@ export const useSignForm = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  return { step, data, update, goTo, next, prev, submitted };
+  return { step, data, update, goTo, next, prev, submitted, isSubmitting, submitError };
 };
 
 export const radioLabels: Record<string, Record<string, string>> = {

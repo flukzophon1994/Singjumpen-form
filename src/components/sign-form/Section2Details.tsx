@@ -62,6 +62,9 @@ const Section2Details = ({ data, update }: Props) => (
           <option value="">-- เลือกความสูงตัวอักษร --</option>
           {['10 cm','15 cm','20 cm','25 cm','30 cm','35 cm','40 cm','45 cm','50 cm','55 cm','60 cm','65 cm','70 cm','ระบุเอง','ให้ร้านแนะนำ'].map(o => <option key={o}>{o}</option>)}
         </select>
+        {data.letterHeight === 'ระบุเอง' && (
+          <input type="text" className="form-input mt-2.5" placeholder="ระบุความสูงตัวอักษร (cm)" value={data.letterHeightCustom} onChange={e => update('letterHeightCustom', e.target.value)} />
+        )}
       </FieldGroup>
 
       <FieldGroup label="สีไฟที่ต้องการ" required>
