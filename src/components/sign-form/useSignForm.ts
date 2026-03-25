@@ -150,7 +150,7 @@ export const useSignForm = () => {
         additional_notes: data.note,
       };
 
-      const response = await fetch('http://192.168.202.155:3000/api/quotes', {
+      const response = await fetch('https://singjumpen.com/api/quotes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
