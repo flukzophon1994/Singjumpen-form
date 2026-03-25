@@ -6,13 +6,15 @@ import Section3Install from '@/components/sign-form/Section3Install';
 import Section4Budget from '@/components/sign-form/Section4Budget';
 import SuccessScreen from '@/components/sign-form/SuccessScreen';
 import NavBar from '@/components/sign-form/NavBar';
+import LoadingModal from '@/components/sign-form/LoadingModal';
 import { useSignForm } from '@/components/sign-form/useSignForm';
 
 const Index = () => {
-  const { step, data, update, goTo, next, prev, submitted, isSubmitting, submitError } = useSignForm();
+  const { step, data, update, updateFile, goTo, next, prev, submitted, isSubmitting, submitError, emailSent, emailError } = useSignForm();
 
   return (
     <div className="min-h-screen bg-background">
+      <LoadingModal isOpen={isSubmitting} />
       <HeroHeader />
 
       {!submitted && (
@@ -20,8 +22,8 @@ const Index = () => {
           <ProgressBar currentStep={step} totalSteps={4} onStepClick={goTo} />
           <main className="max-w-[700px] mx-auto px-5 pt-10 pb-[120px]">
             {step === 1 && <Section1Contact data={data} update={update} />}
-            {step === 2 && <Section2Details data={data} update={update} />}
-            {step === 3 && <Section3Install data={data} update={update} />}
+            {step === 2 && <Section2Details data={data} update={update} updateFile={updateFile} />}
+            {step === 3 && <Section3Install data={data} update={update} updateFile={updateFile} />}
             {step === 4 && <Section4Budget data={data} update={update} />}
           </main>
           <NavBar
@@ -37,7 +39,7 @@ const Index = () => {
 
       {submitted && (
         <main className="max-w-[700px] mx-auto px-5 pb-[120px]">
-          <SuccessScreen />
+          <SuccessScreen emailSent={emailSent} emailError={emailError} />
         </main>
       )}
     </div>

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { sendQuoteEmail, isEmailJSConfigured } from '@/services/emailService';
+import { uploadMultipleFiles, isCloudinaryConfigured } from '@/services/cloudinaryService';
 
 export interface SignFormData {
   email: string;
@@ -8,6 +10,8 @@ export interface SignFormData {
   shopName: string;
   address: string;
   designFile: string;
+  designFileUpload: File | null;
+  design_file_url?: string;
   designNote: string;
   signText: string;
   logo: string;
@@ -25,6 +29,8 @@ export interface SignFormData {
   mountType: string;
   oldSign: string;
   sitePhoto: string;
+  sitePhotoUpload: File | null;
+  site_photo_url?: string;
   budget: string;
   budgetCustom: string;
   includeInstall: string;
@@ -34,10 +40,10 @@ export interface SignFormData {
 
 const initialData: SignFormData = {
   email: '', name: '', phone: '', lineId: '', shopName: '', address: '',
-  designFile: '', designNote: '', signText: '', logo: '',
+  designFile: '', designFileUpload: null, designNote: '', signText: '', logo: '',
   signWidth: '', signHeight: '', letterHeight: '', letterHeightCustom: '', lightColor: '', lightColorCustom: '',
   borderMaterial: '', timer: '', installHeight: '', installMethod: '',
-  wallType: '', mountType: '', oldSign: '', sitePhoto: '',
+  wallType: '', mountType: '', oldSign: '', sitePhoto: '', sitePhotoUpload: null,
   budget: '', budgetCustom: '', includeInstall: '', deadline: '', note: '',
 };
 
@@ -47,9 +53,15 @@ export const useSignForm = () => {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [emailSent, setEmailSent] = useState(false);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   const update = (field: keyof SignFormData, value: string) => {
     setData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const updateFile = (field: 'designFileUpload' | 'sitePhotoUpload', file: File | null) => {
+    setData(prev => ({ ...prev, [field]: file }));
   };
 
   const goTo = (n: number) => {
@@ -65,15 +77,47 @@ export const useSignForm = () => {
     
     setIsSubmitting(true);
     setSubmitError(null);
+    setEmailError(null);
     
     try {
+      // อัปโหลดไฟล์ไป Cloudinary ก่อน (ถ้ามีการตั้งค่าและมีไฟล์)
+      let designFileUrl = '';
+      let sitePhotoUrl = '';
+      
+      if (isCloudinaryConfigured()) {
+        const filesToUpload: { file: File; type: 'design' | 'photo' }[] = [];
+        
+        if (data.designFileUpload) {
+          filesToUpload.push({ file: data.designFileUpload, type: 'design' });
+        }
+        if (data.sitePhotoUpload) {
+          filesToUpload.push({ file: data.sitePhotoUpload, type: 'photo' });
+        }
+        
+        if (filesToUpload.length > 0) {
+          console.log('📤 Uploading files to Cloudinary...');
+          const uploadResults = await uploadMultipleFiles(filesToUpload);
+          
+          if (uploadResults.error) {
+            console.warn('⚠️ File upload failed:', uploadResults.error);
+            // ไม่ throw error เพื่อให้ส่งฟอร์มต่อได้ แค่ไม่มี URL
+          } else {
+            designFileUrl = uploadResults.designUrl || '';
+            sitePhotoUrl = uploadResults.photoUrl || '';
+            console.log('✅ Files uploaded successfully');
+          }
+        }
+      } else {
+        console.log('ℹ️ Cloudinary not configured, skipping file upload');
+      }
+
       // Determine budget amount: use custom if "other" is selected, otherwise use selected budget
       const budgetAmount = data.budget === 'other' ? data.budgetCustom : data.budget;
       
       // Determine letter height: use custom if "ระบุเอง" is selected, otherwise use selected value
       const letterHeightValue = data.letterHeight === 'ระบุเอง' ? data.letterHeightCustom : data.letterHeight;
       
-      // Send only the fields that exist in the database
+      // สร้างข้อมูลสำหรับส่ง API (ใช้ JSON)
       const apiData = {
         email: data.email,
         name: data.name,
@@ -82,6 +126,7 @@ export const useSignForm = () => {
         shop_name: data.shopName,
         address: data.address,
         design_file: data.designFile,
+        design_file_url: designFileUrl,  // URL จาก Cloudinary
         design_note: data.designNote,
         sign_text: data.signText,
         logo_included: data.logo,
@@ -98,6 +143,7 @@ export const useSignForm = () => {
         mount_type: data.mountType,
         old_sign_exists: data.oldSign,
         site_photo: data.sitePhoto,
+        site_photo_url: sitePhotoUrl,  // URL จาก Cloudinary
         budget_amount: budgetAmount,
         include_installation: data.includeInstall,
         deadline: data.deadline,
@@ -119,7 +165,35 @@ export const useSignForm = () => {
         throw new Error(errorMessage);
       }
       
+      // บันทึกข้อมูลสำเร็จ ต่อไปส่งอีเมล
       setSubmitted(true);
+      
+      // ส่งอีเมลด้วย EmailJS (ถ้าได้ตั้งค่าไว้)
+      // สร้าง data object พร้อม URL สำหรับส่งอีเมล
+      const emailData = {
+        ...data,
+        design_file_url: designFileUrl,
+        site_photo_url: sitePhotoUrl,
+      };
+      
+      if (isEmailJSConfigured()) {
+        try {
+          const emailResult = await sendQuoteEmail(emailData);
+          if (emailResult.success) {
+            setEmailSent(true);
+            console.log('✅ Email notification sent successfully');
+          } else {
+            setEmailError(emailResult.message);
+            console.warn('⚠️ Email sending failed:', emailResult.message);
+          }
+        } catch (emailErr) {
+          console.error('❌ Email sending error:', emailErr);
+          setEmailError('ไม่สามารถส่งอีเมลแจ้งเตือนได้');
+        }
+      } else {
+        console.log('ℹ️ EmailJS not configured, skipping email notification');
+      }
+      
     } catch (error) {
       console.error('Error submitting form:', error);
       setSubmitError(error instanceof Error ? error.message : 'เกิดข้อผิดพลาดในการส่งข้อมูล');
@@ -154,7 +228,7 @@ export const useSignForm = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  return { step, data, update, goTo, next, prev, submitted, isSubmitting, submitError };
+  return { step, data, update, updateFile, goTo, next, prev, submitted, isSubmitting, submitError, emailSent, emailError };
 };
 
 export const radioLabels: Record<string, Record<string, string>> = {
