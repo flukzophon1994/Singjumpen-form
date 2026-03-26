@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { sendQuoteEmail, isEmailJSConfigured } from '@/services/emailService';
-import { uploadMultipleFiles, isCloudinaryConfigured } from '@/services/cloudinaryService';
+import { uploadMultipleFiles, isCloudinaryConfigured, uploadToCloudinary } from '@/services/cloudinaryService';
 
 export interface SignFormData {
   email: string;
@@ -9,6 +9,8 @@ export interface SignFormData {
   lineId: string;
   shopName: string;
   address: string;
+  signType: string;
+  signTypeExample: string; // รูปตัวอย่างที่เลือก (1, 2, 3)
   designFile: string;
   designFileUpload: File | null;
   design_file_url?: string;
@@ -36,15 +38,242 @@ export interface SignFormData {
   includeInstall: string;
   deadline: string;
   note: string;
+  // Plate fields (ป้ายแผ่น/เนมเพลท)
+  plateType: string;
+  plateContent: string;
+  plateWidth: string;
+  plateHeight: string;
+  plateQuantity: string;
+  plateMaterial: string;
+  plateMaterialColor: string;
+  plateMaterialOther: string;
+  plateThickness: string;
+  plateThicknessOther: string;
+  plateDetail: string;
+  plateFinish: string;
+  plateFinishCustom: string;
+  plateInstall: string;
+  plateNote: string;
+  // เนมเพลทเครื่องจักร
+  plateModel: string;
+  plateSerial: string;
+  plateVoltage: string;
+  plateWatt: string;
+  plateProdDate: string;
+  plateLogo: string;
+  plateWarning: string;
+  plateDataSame: string;
+  // NonLit fields (งานอักษรไม่ไฟ)
+  nonLitType: string;
+  nonLitText: string;
+  nonLitQuantity: string;
+  nonLitLetterHeight: string;
+  nonLitThickness: string;
+  nonLitTotalLength: string;
+  nonLitMaterial: string;
+  nonLitMaterialOther: string;
+  nonLitFinish: string;
+  nonLitFinishColor: string;
+  nonLitMaterialThickness: string;
+  nonLitMaterialThicknessOther: string;
+  nonLitAcrylicColor: string;
+  nonLitAcrylicThickness: string;
+  nonLitBackingShape: string;
+  nonLitInstall: string;
+  nonLitExtras: string;
+  nonLitNote: string;
+  // Lit fields (งานอักษรไฟ)
+  litType: string;
+  litText: string;
+  litLogo: string;
+  litQuantity: string;
+  litLetterHeight: string;
+  litRimThickness: string;
+  litTotalLength: string;
+  litAcrylicColor: string;
+  litAcrylicColorOther: string;
+  litLightColor: string;
+  litSystem: string;
+  litUsage: string;
+  litInstall: string;
+  litHasPower: string;
+  litPowerDistance: string;
+  litWiring: string;
+  litNote: string;
+  // Lightbox fields (งานกล่องไฟ)
+  lightboxType: string;
+  lightboxContent: string;
+  lightboxWidth: string;
+  lightboxHeight: string;
+  lightboxDepth: string;
+  lightboxFaceMaterial: string;
+  lightboxFrameMaterial: string;
+  lightboxFrameFinish: string;
+  lightboxLightType: string;
+  lightboxLightColor: string;
+  lightboxLightPosition: string;
+  lightboxPrint: string;
+  lightboxPrintType: string;
+  lightboxQuantity: string;
+  lightboxInstallType: string;
+  lightboxNote: string;
+  // Vinyl fields (งานป้ายไวนิล)
+  vinylType: string;
+  vinylContent: string;
+  vinylWidth: string;
+  vinylHeight: string;
+  vinylMaterialType: string;
+  vinylMaterialSpec: string;
+  vinylPrintQuality: string;
+  vinylFinish: string;
+  vinylEyelet: string;
+  vinylQuantity: string;
+  vinylInstallType: string;
+  vinylInstallNote: string;
+  vinylSurface: string;
+  vinylNote: string;
+  // Metal fields (งานเหล็ก/รั้ว/ประตู)
+  metalType: string;
+  metalContent: string;
+  metalWidth: string;
+  metalHeight: string;
+  metalMaterial: string;
+  metalThickness: string;
+  metalFinish: string;
+  metalCoating: string;
+  metalGateType: string;
+  metalGateOpen: string;
+  metalFenceHeight: string;
+  metalQuantity: string;
+  metalInstallType: string;
+  metalNote: string;
+  metalAccessories: string;
+  metalSurfacePrep: string;
+  // Facade fields (งานฟาซาด/บังตา/ลายฉลุ)
+  facadeType: string;
+  facadeContent: string;
+  facadeWidth: string;
+  facadeHeight: string;
+  facadeMaterial: string;
+  facadeThickness: string;
+  facadePattern: string;
+  facadeFinish: string;
+  facadeCoating: string;
+  facadeBacking: string;
+  facadeQuantity: string;
+  facadeInstallType: string;
+  facadeNote: string;
+  facadeStructure: string;
+  facadeMaintenance: string;
+  // InstallOnly fields (งานติดตั้งอย่างเดียว)
+  installOnlyType: string;
+  installOnlyContent: string;
+  installOnlyWidth: string;
+  installOnlyHeight: string;
+  installOnlyCurrentSign: string;
+  installOnlyDismantle: string;
+  installOnlySurface: string;
+  installOnlyAccess: string;
+  installOnlyWorkHeight: string;
+  installOnlyPower: string;
+  installOnlyQuantity: string;
+  installOnlyDeadline: string;
+  installOnlyNote: string;
+  installOnlyPhotos: string;
+  // Additional InstallOnly fields
+  installOnlyTypeOther: string;
+  installOnlyDetails: string;
+  installOnlySize: string;
+  installOnlyHasPower: string;
+  installOnlyPowerDistance: string;
+  installOnlyDate: string;
+  installOnlyTime: string;
+  installOnlyPhoto: string;
+  installOnlyWall: string;
+  // Section4Install new fields
+  installSiteName: string;
+  installGps: string;
+  installContactName: string;
+  installContactPhone: string;
+  installSiteType: string;
+  installSiteTypeOther: string;
+  installHeightDetail: string;
+  installAccess: string;
+  installEquipment: string;
+  installEquipmentOther: string;
+  sitePhotoTypes: string;
+  // Multiple photo uploads for each type
+  sitePhotoFront: File | null;
+  sitePhotoInstall: File | null;
+  sitePhotoPower: File | null;
+  sitePhotoSurface: File | null;
+  sitePhotoFrontUrl: string;
+  sitePhotoInstallUrl: string;
+  sitePhotoPowerUrl: string;
+  sitePhotoSurfaceUrl: string;
+  // Example image URL (uploaded to Cloudinary)
+  signTypeExampleUrl: string;
 }
 
 const initialData: SignFormData = {
-  email: '', name: '', phone: '', lineId: '', shopName: '', address: '',
+  email: '', name: '', phone: '', lineId: '', shopName: '', address: '', signType: '', signTypeExample: '',
   designFile: '', designFileUpload: null, designNote: '', signText: '', logo: '',
   signWidth: '', signHeight: '', letterHeight: '', letterHeightCustom: '', lightColor: '', lightColorCustom: '',
   borderMaterial: '', timer: '', installHeight: '', installMethod: '',
   wallType: '', mountType: '', oldSign: '', sitePhoto: '', sitePhotoUpload: null,
   budget: '', budgetCustom: '', includeInstall: '', deadline: '', note: '',
+  // Plate fields
+  plateType: '', plateContent: '', plateWidth: '', plateHeight: '', plateQuantity: '', plateMaterial: '',
+  plateMaterialColor: '', plateMaterialOther: '', plateThickness: '', plateThicknessOther: '', plateDetail: '',
+  plateFinish: '', plateFinishCustom: '', plateInstall: '', plateNote: '',
+  plateModel: '', plateSerial: '', plateVoltage: '', plateWatt: '', plateProdDate: '', plateLogo: '',
+  plateWarning: '', plateDataSame: '',
+  // NonLit fields
+  nonLitType: '', nonLitText: '', nonLitQuantity: '', nonLitLetterHeight: '',
+  nonLitThickness: '', nonLitTotalLength: '', nonLitMaterial: '', nonLitMaterialOther: '',
+  nonLitFinish: '', nonLitFinishColor: '', nonLitMaterialThickness: '', nonLitMaterialThicknessOther: '',
+  nonLitAcrylicColor: '', nonLitAcrylicThickness: '', nonLitBackingShape: '', nonLitInstall: '', nonLitExtras: '',
+  nonLitNote: '',
+  // Lit fields
+  litType: '', litText: '', litLogo: '', litQuantity: '', litLetterHeight: '',
+  litRimThickness: '', litTotalLength: '', litAcrylicColor: '', litAcrylicColorOther: '',
+  litLightColor: '', litSystem: '', litUsage: '', litInstall: '', litHasPower: '',
+  litPowerDistance: '', litWiring: '', litNote: '',
+  // Lightbox fields
+  lightboxType: '', lightboxContent: '', lightboxWidth: '', lightboxHeight: '', lightboxDepth: '',
+  lightboxFaceMaterial: '', lightboxFrameMaterial: '', lightboxFrameFinish: '', lightboxLightType: '',
+  lightboxLightColor: '', lightboxLightPosition: '', lightboxPrint: '', lightboxPrintType: '',
+  lightboxQuantity: '', lightboxInstallType: '', lightboxNote: '',
+  // Vinyl fields
+  vinylType: '', vinylContent: '', vinylWidth: '', vinylHeight: '', vinylMaterialType: '',
+  vinylMaterialSpec: '', vinylPrintQuality: '', vinylFinish: '', vinylEyelet: '', vinylQuantity: '',
+  vinylInstallType: '', vinylInstallNote: '', vinylSurface: '', vinylNote: '',
+  // Metal fields
+  metalType: '', metalContent: '', metalWidth: '', metalHeight: '', metalMaterial: '', metalThickness: '',
+  metalFinish: '', metalCoating: '', metalGateType: '', metalGateOpen: '', metalFenceHeight: '',
+  metalQuantity: '', metalInstallType: '', metalNote: '', metalAccessories: '', metalSurfacePrep: '',
+  // Facade fields
+  facadeType: '', facadeContent: '', facadeWidth: '', facadeHeight: '', facadeMaterial: '', facadeThickness: '',
+  facadePattern: '', facadeFinish: '', facadeCoating: '', facadeBacking: '', facadeQuantity: '',
+  facadeInstallType: '', facadeNote: '', facadeStructure: '', facadeMaintenance: '',
+  // InstallOnly fields
+  installOnlyType: '', installOnlyContent: '', installOnlyWidth: '', installOnlyHeight: '',
+  installOnlyCurrentSign: '', installOnlyDismantle: '', installOnlySurface: '', installOnlyAccess: '',
+  installOnlyWorkHeight: '', installOnlyPower: '', installOnlyQuantity: '', installOnlyDeadline: '',
+  installOnlyNote: '', installOnlyPhotos: '',
+  // Additional InstallOnly fields
+  installOnlyTypeOther: '', installOnlyDetails: '', installOnlySize: '', installOnlyHasPower: '',
+  installOnlyPowerDistance: '', installOnlyDate: '', installOnlyTime: '', installOnlyPhoto: '',
+  installOnlyWall: '',
+  // Section4Install new fields
+  installSiteName: '', installGps: '', installContactName: '', installContactPhone: '',
+  installSiteType: '', installSiteTypeOther: '', installHeightDetail: '', installAccess: '', installEquipment: '',
+  installEquipmentOther: '', sitePhotoTypes: '',
+  // Multiple photo uploads
+  sitePhotoFront: null, sitePhotoInstall: null, sitePhotoPower: null, sitePhotoSurface: null,
+  sitePhotoFrontUrl: '', sitePhotoInstallUrl: '', sitePhotoPowerUrl: '', sitePhotoSurfaceUrl: '',
+  // Example image URL
+  signTypeExampleUrl: '',
 };
 
 export const useSignForm = () => {
@@ -60,7 +289,7 @@ export const useSignForm = () => {
     setData(prev => ({ ...prev, [field]: value }));
   };
 
-  const updateFile = (field: 'designFileUpload' | 'sitePhotoUpload', file: File | null) => {
+  const updateFile = (field: 'designFileUpload' | 'sitePhotoUpload' | 'sitePhotoFront' | 'sitePhotoInstall' | 'sitePhotoPower' | 'sitePhotoSurface', file: File | null) => {
     setData(prev => ({ ...prev, [field]: file }));
   };
 
@@ -71,6 +300,160 @@ export const useSignForm = () => {
   // Convert camelCase to snake_case for API
   const toSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 
+  /**
+   * อัปโหลดรูปตัวอย่างไปยัง Cloudinary
+   */
+  const uploadExampleImage = async (): Promise<string> => {
+    if (!data.signType || !data.signTypeExample) return '';
+    
+    try {
+      // สร้าง path ของรูปตัวอย่าง
+      const exampleNum = data.signTypeExample;
+      const paths: Record<string, string> = {
+        plate: `/assets/01-sign-nameplates/sign 0${exampleNum}.jpg`,
+        'non-lit': `/assets/02-non-lit-lettering/nonlit letter 0${exampleNum}.jpg`,
+        lit: `/assets/03-illuminated-lettering/illuminate letter 0${exampleNum}.jpg`,
+        lightbox: `/assets/04-lightboxes/lightbox 0${exampleNum}.jpg`,
+        vinyl: `/assets/05-vinyl-banners/vinyl 0${exampleNum}.jpg`,
+        metal: `/assets/06-steelwork-gates/gate 0${exampleNum}.jpg`,
+        facade: `/assets/07-facade-cnc-patterns/facade 0${exampleNum}.jpg`,
+      };
+      
+      const imagePath = paths[data.signType];
+      if (!imagePath) return '';
+      
+      // ดึงรูปจาก public folder
+      const response = await fetch(imagePath);
+      if (!response.ok) {
+        console.warn('Could not fetch example image:', imagePath);
+        return '';
+      }
+      
+      const blob = await response.blob();
+      const fileName = `${data.signType}_example_${exampleNum}.jpg`;
+      const file = new File([blob], fileName, { type: 'image/jpeg' });
+      
+      // อัปโหลดไป Cloudinary
+      const result = await uploadToCloudinary(file, 'singjumpen-quotes/examples');
+      
+      if (result.success && result.secureUrl) {
+        console.log('✅ Example image uploaded:', result.secureUrl);
+        return result.secureUrl;
+      }
+      
+      return '';
+    } catch (error) {
+      console.error('❌ Error uploading example image:', error);
+      return '';
+    }
+  };
+
+  /**
+   * อัปโหลดไฟล์ทั้งหมดไปยัง Cloudinary ก่อนส่ง
+   */
+  const uploadAllFiles = async (): Promise<{
+    designFileUrl: string;
+    sitePhotoUrl: string;
+    sitePhotoFrontUrl: string;
+    sitePhotoInstallUrl: string;
+    sitePhotoPowerUrl: string;
+    sitePhotoSurfaceUrl: string;
+    exampleImageUrl: string;
+  }> => {
+    const results = {
+      designFileUrl: '',
+      sitePhotoUrl: '',
+      sitePhotoFrontUrl: '',
+      sitePhotoInstallUrl: '',
+      sitePhotoPowerUrl: '',
+      sitePhotoSurfaceUrl: '',
+      exampleImageUrl: '',
+    };
+
+    if (!isCloudinaryConfigured()) {
+      console.log('ℹ️ Cloudinary not configured, skipping file uploads');
+      return results;
+    }
+
+    const uploadPromises: Promise<void>[] = [];
+
+    // อัปโหลดไฟล์ออกแบบ
+    if (data.designFileUpload) {
+      uploadPromises.push(
+        uploadToCloudinary(data.designFileUpload, 'singjumpen-quotes/designs').then(result => {
+          if (result.success && result.secureUrl) {
+            results.designFileUrl = result.secureUrl;
+          }
+        })
+      );
+    }
+
+    // อัปโหลดรูปหน้างาน (เก่า)
+    if (data.sitePhotoUpload) {
+      uploadPromises.push(
+        uploadToCloudinary(data.sitePhotoUpload, 'singjumpen-quotes/photos').then(result => {
+          if (result.success && result.secureUrl) {
+            results.sitePhotoUrl = result.secureUrl;
+          }
+        })
+      );
+    }
+
+    // อัปโหลดรูปหน้างานใหม่ (หลายรูป)
+    if (data.sitePhotoFront) {
+      uploadPromises.push(
+        uploadToCloudinary(data.sitePhotoFront, 'singjumpen-quotes/photos').then(result => {
+          if (result.success && result.secureUrl) {
+            results.sitePhotoFrontUrl = result.secureUrl;
+          }
+        })
+      );
+    }
+
+    if (data.sitePhotoInstall) {
+      uploadPromises.push(
+        uploadToCloudinary(data.sitePhotoInstall, 'singjumpen-quotes/photos').then(result => {
+          if (result.success && result.secureUrl) {
+            results.sitePhotoInstallUrl = result.secureUrl;
+          }
+        })
+      );
+    }
+
+    if (data.sitePhotoPower) {
+      uploadPromises.push(
+        uploadToCloudinary(data.sitePhotoPower, 'singjumpen-quotes/photos').then(result => {
+          if (result.success && result.secureUrl) {
+            results.sitePhotoPowerUrl = result.secureUrl;
+          }
+        })
+      );
+    }
+
+    if (data.sitePhotoSurface) {
+      uploadPromises.push(
+        uploadToCloudinary(data.sitePhotoSurface, 'singjumpen-quotes/photos').then(result => {
+          if (result.success && result.secureUrl) {
+            results.sitePhotoSurfaceUrl = result.secureUrl;
+          }
+        })
+      );
+    }
+
+    // อัปโหลดรูปตัวอย่าง
+    uploadPromises.push(
+      uploadExampleImage().then(url => {
+        results.exampleImageUrl = url;
+      })
+    );
+
+    // รอให้ทุกไฟล์อัปโหลดเสร็จ
+    await Promise.all(uploadPromises);
+
+    console.log('✅ All files uploaded:', results);
+    return results;
+  };
+
   const submitForm = async () => {
     // Prevent double submission
     if (isSubmitting || submitted) return;
@@ -80,36 +463,21 @@ export const useSignForm = () => {
     setEmailError(null);
     
     try {
-      // อัปโหลดไฟล์ไป Cloudinary ก่อน (ถ้ามีการตั้งค่าและมีไฟล์)
-      let designFileUrl = '';
-      let sitePhotoUrl = '';
+      // อัปโหลดไฟล์ทั้งหมดไป Cloudinary ก่อน
+      console.log('📤 Uploading all files to Cloudinary...');
+      const uploadResults = await uploadAllFiles();
       
-      if (isCloudinaryConfigured()) {
-        const filesToUpload: { file: File; type: 'design' | 'photo' }[] = [];
-        
-        if (data.designFileUpload) {
-          filesToUpload.push({ file: data.designFileUpload, type: 'design' });
-        }
-        if (data.sitePhotoUpload) {
-          filesToUpload.push({ file: data.sitePhotoUpload, type: 'photo' });
-        }
-        
-        if (filesToUpload.length > 0) {
-          console.log('📤 Uploading files to Cloudinary...');
-          const uploadResults = await uploadMultipleFiles(filesToUpload);
-          
-          if (uploadResults.error) {
-            console.warn('⚠️ File upload failed:', uploadResults.error);
-            // ไม่ throw error เพื่อให้ส่งฟอร์มต่อได้ แค่ไม่มี URL
-          } else {
-            designFileUrl = uploadResults.designUrl || '';
-            sitePhotoUrl = uploadResults.photoUrl || '';
-            console.log('✅ Files uploaded successfully');
-          }
-        }
-      } else {
-        console.log('ℹ️ Cloudinary not configured, skipping file upload');
-      }
+      // อัปเดต state ด้วย URL ที่ได้รับ
+      setData(prev => ({
+        ...prev,
+        design_file_url: uploadResults.designFileUrl,
+        site_photo_url: uploadResults.sitePhotoUrl,
+        sitePhotoFrontUrl: uploadResults.sitePhotoFrontUrl,
+        sitePhotoInstallUrl: uploadResults.sitePhotoInstallUrl,
+        sitePhotoPowerUrl: uploadResults.sitePhotoPowerUrl,
+        sitePhotoSurfaceUrl: uploadResults.sitePhotoSurfaceUrl,
+        signTypeExampleUrl: uploadResults.exampleImageUrl,
+      }));
 
       // Determine budget amount: use custom if "other" is selected, otherwise use selected budget
       const budgetAmount = data.budget === 'other' ? data.budgetCustom : data.budget;
@@ -117,40 +485,80 @@ export const useSignForm = () => {
       // Determine letter height: use custom if "ระบุเอง" is selected, otherwise use selected value
       const letterHeightValue = data.letterHeight === 'ระบุเอง' ? data.letterHeightCustom : data.letterHeight;
       
+      // Determine sign text based on sign type
+      const getSignText = (): string => {
+        switch (data.signType) {
+          case 'plate':
+            return data.plateContent || data.signText;
+          case 'non-lit':
+            return data.nonLitText || data.signText;
+          case 'lit':
+            return data.litText || data.signText;
+          case 'lightbox':
+            return data.lightboxContent || data.signText;
+          case 'vinyl':
+            return data.vinylContent || data.signText;
+          case 'metal':
+            return data.metalContent || data.signText;
+          case 'facade':
+            return data.facadeContent || data.signText;
+          case 'install-only':
+            return data.installOnlyDetails || data.signText;
+          default:
+            return data.signText;
+        }
+      };
+      
+      // Helper function to convert string to boolean
+      const toBoolean = (value: string): boolean | null => {
+        if (value === 'yes' || value === 'true') return true;
+        if (value === 'no' || value === 'false') return false;
+        return null;
+      };
+      
       // สร้างข้อมูลสำหรับส่ง API (ใช้ JSON)
       const apiData = {
+        sign_type: data.signType,
         email: data.email,
         name: data.name,
         phone: data.phone,
         line_id: data.lineId,
         shop_name: data.shopName,
         address: data.address,
-        design_file: data.designFile,
-        design_file_url: designFileUrl,  // URL จาก Cloudinary
-        design_note: data.designNote,
-        sign_text: data.signText,
-        logo_included: data.logo,
-        sign_width_cm: data.signWidth,
-        sign_height_cm: data.signHeight,
-        letter_height: letterHeightValue,
-        light_color: data.lightColor,
-        light_color_custom: data.lightColorCustom,
-        border_material: data.borderMaterial,
-        timer_included: data.timer,
-        install_height: data.installHeight,
-        install_method: data.installMethod,
-        wall_type: data.wallType,
-        mount_type: data.mountType,
-        old_sign_exists: data.oldSign,
-        site_photo: data.sitePhoto,
-        site_photo_url: sitePhotoUrl,  // URL จาก Cloudinary
-        budget_amount: budgetAmount,
-        include_installation: data.includeInstall,
-        deadline: data.deadline,
-        additional_notes: data.note,
+        design_file: data.designFile || null,
+        design_file_url: uploadResults.designFileUrl || null,
+        design_note: data.designNote || null,
+        sign_text: getSignText() || '-',
+        logo_included: toBoolean(data.logo),
+        sign_width_cm: data.signWidth || null,
+        sign_height_cm: data.signHeight || null,
+        letter_height: letterHeightValue || null,
+        light_color: data.lightColor || null,
+        light_color_custom: data.lightColorCustom || null,
+        border_material: data.borderMaterial || null,
+        timer_included: toBoolean(data.timer),
+        install_height: data.installHeight || null,
+        install_method: data.installMethod || null,
+        wall_type: data.wallType || null,
+        mount_type: data.mountType || null,
+        old_sign_exists: toBoolean(data.oldSign),
+        site_photo: data.sitePhoto || null,
+        site_photo_url: uploadResults.sitePhotoUrl || null,
+        budget_amount: budgetAmount || null,
+        include_installation: toBoolean(data.includeInstall),
+        deadline: data.deadline || null,
+        additional_notes: data.note || null,
+        // รูปตัวอย่าง
+        sign_type_example: data.signTypeExample || null,
+        sign_type_example_url: uploadResults.exampleImageUrl || null,
+        // รูปหน้างานเพิ่มเติม
+        site_photo_front_url: uploadResults.sitePhotoFrontUrl || null,
+        site_photo_install_url: uploadResults.sitePhotoInstallUrl || null,
+        site_photo_power_url: uploadResults.sitePhotoPowerUrl || null,
+        site_photo_surface_url: uploadResults.sitePhotoSurfaceUrl || null,
       };
 
-      const response = await fetch('https://singjumpen.com/api/quotes', {
+      const response = await fetch('https://Singjumpen.com/api/quotes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -172,8 +580,13 @@ export const useSignForm = () => {
       // สร้าง data object พร้อม URL สำหรับส่งอีเมล
       const emailData = {
         ...data,
-        design_file_url: designFileUrl,
-        site_photo_url: sitePhotoUrl,
+        design_file_url: uploadResults.designFileUrl,
+        site_photo_url: uploadResults.sitePhotoUrl,
+        sitePhotoFrontUrl: uploadResults.sitePhotoFrontUrl,
+        sitePhotoInstallUrl: uploadResults.sitePhotoInstallUrl,
+        sitePhotoPowerUrl: uploadResults.sitePhotoPowerUrl,
+        sitePhotoSurfaceUrl: uploadResults.sitePhotoSurfaceUrl,
+        signTypeExampleUrl: uploadResults.exampleImageUrl,
       };
       
       if (isEmailJSConfigured()) {
@@ -203,23 +616,12 @@ export const useSignForm = () => {
   };
 
   const next = () => {
-    // #region agent log
-    fetch('http://127.0.0.1:7908/ingest/bc630f05-7678-40d7-a0c3-f1e3125dc587',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'e7c16c'},body:JSON.stringify({sessionId:'e7c16c',runId:'pre-fix',hypothesisId:'H1',location:'useSignForm.ts:next:entry',message:'next invoked',data:{step,submitted,requiredSnapshot:{email:!!data.email,name:!!data.name,phone:!!data.phone,shopName:!!data.shopName,signText:!!data.signText,installHeight:!!data.installHeight,budget:!!data.budget,deadline:!!data.deadline}},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
-    if (step < 4) setStep(step + 1);
-    if (step < 4) {
-      // #region agent log
-      fetch('http://127.0.0.1:7908/ingest/bc630f05-7678-40d7-a0c3-f1e3125dc587',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'e7c16c'},body:JSON.stringify({sessionId:'e7c16c',runId:'pre-fix',hypothesisId:'H2',location:'useSignForm.ts:next:step-advance',message:'advance step without submit',data:{fromStep:step,toStep:step+1},timestamp:Date.now()})}).catch(()=>{});
-      // #endregion
+    if (step < 5) setStep(step + 1);
+    if (step < 5) {
+      // Just advance step
     } else {
-      // #region agent log
-      fetch('http://127.0.0.1:7908/ingest/bc630f05-7678-40d7-a0c3-f1e3125dc587',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'e7c16c'},body:JSON.stringify({sessionId:'e7c16c',runId:'pre-fix',hypothesisId:'H3',location:'useSignForm.ts:next:submit-branch',message:'setSubmitted called',data:{step,willSubmit:true,hasNetworkSubmit:false},timestamp:Date.now()})}).catch(()=>{});
-      // #endregion
       submitForm();
     }
-    // #region agent log
-    fetch('http://127.0.0.1:7908/ingest/bc630f05-7678-40d7-a0c3-f1e3125dc587',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'e7c16c'},body:JSON.stringify({sessionId:'e7c16c',runId:'pre-fix',hypothesisId:'H4',location:'useSignForm.ts:next:exit',message:'next completed',data:{stepAtExit:step,submittedAtExit:submitted},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -232,6 +634,7 @@ export const useSignForm = () => {
 };
 
 export const radioLabels: Record<string, Record<string, string>> = {
+  signType: { plate: 'ป้ายแผ่น / เนมเพลท / ป้ายหน้าห้อง', 'non-lit': 'งานอักษรไม่ไฟ', lit: 'งานอักษรไฟ', lightbox: 'งานกล่องไฟ', vinyl: 'งานป้ายไวนิล', metal: 'งานเหล็ก / รั้ว / ประตู', facade: 'งานฟาซาด / บังตา / ลายฉลุ' },
   designFile: { have: 'มีไฟล์แล้ว', no: 'ให้ร้านออกแบบ' },
   logo: { yes: 'ใส่โลโก้', no: 'ไม่ใส่โลโก้' },
   lightColor: { coolwhite: 'ขาว (Cool White)', warmwhite: 'วอร์มไวท์', rgb: 'RGB' },
@@ -241,8 +644,9 @@ export const radioLabels: Record<string, Record<string, string>> = {
   wallType: { metalsheet: 'เมทัลชีท', steelframe: 'โครงเหล็ก', marble: 'หินอ่อน', slat: 'ระแนง', ready: 'มีโครงเหล็กรอแล้ว', composite: 'คอมโพสิต' },
   mountType: { wall: 'แนบผนัง', roof: 'โครงเหล็กบนหลังคา', floor: 'โครงเหล็กยึดพื้น' },
   oldSign: { yes: 'มี ต้องรื้อก่อน', no: 'ไม่มี' },
-  sitePhoto: { yes: 'มีรูป จะส่งให้', visit: 'ให้ร้านไปดูหน้างาน' },
+  sitePhoto: { yes: 'มีรูป', visit: 'ให้ร้านไปดูหน้างาน' },
   includeInstall: { yes: 'รวมค่าติดตั้ง', no: 'นำไปติดเอง' },
+  installSiteType: { house: 'บ้าน', shophouse: 'อาคารพาณิชย์', shop: 'ร้านค้า', factory: 'โรงงาน', mall: 'ห้าง', office: 'ออฟฟิศ', condo: 'คอนโด', other: 'อื่น ๆ' },
 };
 
 export const getLabel = (field: string, value: string) => {

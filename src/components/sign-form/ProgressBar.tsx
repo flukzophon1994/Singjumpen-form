@@ -4,7 +4,7 @@ interface ProgressBarProps {
   onStepClick: (step: number) => void;
 }
 
-const stepLabels = ['ข้อมูลติดต่อ', 'รายละเอียดป้าย', 'การติดตั้ง', 'งบ & กำหนดการ'];
+const stepLabels = ['ข้อมูลติดต่อ', 'ประเภทงาน', 'รายละเอียดป้าย', 'การติดตั้ง', 'งบ & กำหนดการ'];
 
 const ProgressBar = ({ currentStep, totalSteps, onStepClick }: ProgressBarProps) => {
   const pct = (currentStep / totalSteps) * 100;

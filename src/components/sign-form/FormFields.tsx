@@ -76,3 +76,65 @@ export const BudgetCard = ({ amount, unit = 'บาท', selected, onClick }: Bu
     </div>
   </div>
 );
+
+interface TypeCardProps {
+  icon: string;
+  title: string;
+  desc?: string;
+  selected: boolean;
+  onClick: () => void;
+}
+
+export const TypeCard = ({ icon, title, desc, selected, onClick }: TypeCardProps) => (
+  <div
+    className={`relative cursor-pointer group transition-all duration-200`}
+    onClick={onClick}
+  >
+    <div className={`
+      border-2 rounded-xl p-4 transition-all duration-200
+      ${selected
+        ? 'border-primary bg-primary/5 shadow-md'
+        : 'border-border bg-card hover:border-primary/40 hover:shadow-sm'
+      }
+    `}>
+      {/* Icon */}
+      <div className={`
+        text-4xl mb-3 transition-transform duration-200
+        ${selected ? 'scale-110' : 'group-hover:scale-105'}
+      `}>
+        {icon}
+      </div>
+      
+      {/* Radio indicator */}
+      <div className={`
+        absolute top-3 right-3 w-5 h-5 rounded-full border-2 flex items-center justify-center
+        transition-all duration-200
+        ${selected
+          ? 'border-primary bg-primary'
+          : 'border-muted-foreground/30'
+        }
+      `}>
+        {selected && (
+          <svg className="w-3 h-3 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+          </svg>
+        )}
+      </div>
+      
+      {/* Title */}
+      <div className={`
+        font-heading text-sm font-semibold leading-tight mb-1
+        ${selected ? 'text-primary' : 'text-foreground'}
+      `}>
+        {title}
+      </div>
+      
+      {/* Description */}
+      {desc && (
+        <div className="text-xs text-muted-foreground leading-snug">
+          {desc}
+        </div>
+      )}
+    </div>
+  </div>
+);
