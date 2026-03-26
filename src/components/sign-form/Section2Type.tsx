@@ -51,6 +51,18 @@ const signTypes = [
     title: 'งานฟาซาด / บังตา / ลายฉลุ',
     desc: 'งานฟาซาดอาคาร บังตา ลายฉลุอะลูมิเนียม',
   },
+  {
+    value: 'block-paint',
+    icon: '🖌️',
+    title: 'งานบล็อคพ่นสี',
+    desc: 'บล็อคพ่นสีบนวัสดุต่างๆ',
+  },
+  {
+    value: 'cut-parts',
+    icon: '✂️',
+    title: 'งานตัดอะไหล่',
+    desc: 'ตัดอะไหล่เหล็ก สแตนเลส อะลูมิเนียม',
+  },
 ];
 
 // รูปตัวอย่างสำหรับแต่ละประเภท
@@ -89,6 +101,16 @@ const exampleImages: Record<string, { id: string; src: string; label: string }[]
     { id: '1', src: '/assets/07-facade-cnc-patterns/facade 01.jpg', label: 'แบบที่ 1' },
     { id: '2', src: '/assets/07-facade-cnc-patterns/facade 02.jpg', label: 'แบบที่ 2' },
     { id: '3', src: '/assets/07-facade-cnc-patterns/facade 03.jpg', label: 'แบบที่ 3' },
+  ],
+  'block-paint': [
+    { id: '1', src: '/assets/08-block-paint/block paint 01.jpg', label: 'แบบที่ 1' },
+    { id: '2', src: '/assets/08-block-paint/block paint 02.jpg', label: 'แบบที่ 2' },
+    { id: '3', src: '/assets/08-block-paint/block paint 03.jpg', label: 'แบบที่ 3' },
+  ],
+  'cut-parts': [
+    { id: '1', src: '/assets/09-cut-parts/cut parts 01.jpg', label: 'แบบที่ 1' },
+    { id: '2', src: '/assets/09-cut-parts/cut parts 02.jpg', label: 'แบบที่ 2' },
+    { id: '3', src: '/assets/09-cut-parts/cut parts 03.jpg', label: 'แบบที่ 3' },
   ],
 };
 

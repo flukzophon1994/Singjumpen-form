@@ -165,6 +165,36 @@ export interface SignFormData {
   facadeNote: string;
   facadeStructure: string;
   facadeMaintenance: string;
+  // Block Paint fields (งานบล็อคพ่นสี)
+  blockPaintWidth: string;
+  blockPaintLength: string;
+  blockPaintMaterial: string;
+  blockPaintMaterialOther: string;
+  blockPaintText: string;
+  blockPaintQuantity: string;
+  blockPaintNote: string;
+  // Cut Parts fields (งานตัดอะไหล่)
+  cutPartsMaterial: string;
+  cutPartsThickness: string;
+  cutPartsThicknessOther: string;
+  cutPartsInputType: string;
+  cutPartsDesignBy: string;
+  cutPartsQuantity: string;
+  cutPartsNote: string;
+  // Delivery fields (สำหรับงานที่ไม่มีติดตั้ง)
+  deliveryMethod: string;
+  deliveryName: string;
+  deliveryPhone: string;
+  deliveryAddress: string;
+  deliveryGps: string;
+  deliveryNote: string;
+  deliveryLalamoveName: string;
+  deliveryLalamovePhone: string;
+  deliveryLalamoveAddress: string;
+  deliveryLalamoveNote: string;
+  deliveryPickupName: string;
+  deliveryPickupPhone: string;
+  deliveryPickupNote: string;
   // InstallOnly fields (งานติดตั้งอย่างเดียว)
   installOnlyType: string;
   installOnlyContent: string;
@@ -256,6 +286,17 @@ const initialData: SignFormData = {
   facadeType: '', facadeContent: '', facadeWidth: '', facadeHeight: '', facadeMaterial: '', facadeThickness: '',
   facadePattern: '', facadeFinish: '', facadeCoating: '', facadeBacking: '', facadeQuantity: '',
   facadeInstallType: '', facadeNote: '', facadeStructure: '', facadeMaintenance: '',
+  // Block Paint fields
+  blockPaintWidth: '', blockPaintLength: '', blockPaintMaterial: '', blockPaintMaterialOther: '',
+  blockPaintText: '', blockPaintQuantity: '', blockPaintNote: '',
+  // Cut Parts fields
+  cutPartsMaterial: '', cutPartsThickness: '', cutPartsThicknessOther: '',
+  cutPartsInputType: '', cutPartsDesignBy: '', cutPartsQuantity: '', cutPartsNote: '',
+  // Delivery fields
+  deliveryMethod: '', deliveryName: '', deliveryPhone: '', deliveryAddress: '',
+  deliveryGps: '', deliveryNote: '', deliveryLalamoveName: '', deliveryLalamovePhone: '',
+  deliveryLalamoveAddress: '', deliveryLalamoveNote: '', deliveryPickupName: '',
+  deliveryPickupPhone: '', deliveryPickupNote: '',
   // InstallOnly fields
   installOnlyType: '', installOnlyContent: '', installOnlyWidth: '', installOnlyHeight: '',
   installOnlyCurrentSign: '', installOnlyDismantle: '', installOnlySurface: '', installOnlyAccess: '',
@@ -317,6 +358,8 @@ export const useSignForm = () => {
         vinyl: `/assets/05-vinyl-banners/vinyl 0${exampleNum}.jpg`,
         metal: `/assets/06-steelwork-gates/gate 0${exampleNum}.jpg`,
         facade: `/assets/07-facade-cnc-patterns/facade 0${exampleNum}.jpg`,
+        'block-paint': `/assets/08-block-paint/block paint 0${exampleNum}.jpg`,
+        'cut-parts': `/assets/09-cut-parts/cut parts 0${exampleNum}.jpg`,
       };
       
       const imagePath = paths[data.signType];
@@ -502,6 +545,10 @@ export const useSignForm = () => {
             return data.metalContent || data.signText;
           case 'facade':
             return data.facadeContent || data.signText;
+          case 'block-paint':
+            return data.blockPaintText || data.signText;
+          case 'cut-parts':
+            return data.cutPartsNote || data.signText;
           case 'install-only':
             return data.installOnlyDetails || data.signText;
           default:
@@ -516,6 +563,201 @@ export const useSignForm = () => {
         return null;
       };
       
+      // สร้าง type_details ตามประเภทงาน
+      const getTypeDetails = (): Record<string, unknown> => {
+        switch (data.signType) {
+          case 'plate':
+            return {
+              plate_type: data.plateType,
+              plate_content: data.plateContent,
+              plate_width: data.plateWidth,
+              plate_height: data.plateHeight,
+              plate_quantity: data.plateQuantity,
+              plate_material: data.plateMaterial,
+              plate_material_color: data.plateMaterialColor,
+              plate_material_other: data.plateMaterialOther,
+              plate_thickness: data.plateThickness,
+              plate_thickness_other: data.plateThicknessOther,
+              plate_detail: data.plateDetail,
+              plate_finish: data.plateFinish,
+              plate_finish_custom: data.plateFinishCustom,
+              plate_install: data.plateInstall,
+              plate_note: data.plateNote,
+              // เนมเพลทเครื่องจักร
+              plate_model: data.plateModel,
+              plate_serial: data.plateSerial,
+              plate_voltage: data.plateVoltage,
+              plate_watt: data.plateWatt,
+              plate_prod_date: data.plateProdDate,
+              plate_logo: data.plateLogo,
+              plate_warning: data.plateWarning,
+              plate_data_same: data.plateDataSame,
+            };
+          case 'non-lit':
+            return {
+              non_lit_type: data.nonLitType,
+              non_lit_text: data.nonLitText,
+              non_lit_quantity: data.nonLitQuantity,
+              non_lit_letter_height: data.nonLitLetterHeight,
+              non_lit_thickness: data.nonLitThickness,
+              non_lit_total_length: data.nonLitTotalLength,
+              non_lit_material: data.nonLitMaterial,
+              non_lit_material_other: data.nonLitMaterialOther,
+              non_lit_finish: data.nonLitFinish,
+              non_lit_finish_color: data.nonLitFinishColor,
+              non_lit_material_thickness: data.nonLitMaterialThickness,
+              non_lit_material_thickness_other: data.nonLitMaterialThicknessOther,
+              non_lit_acrylic_color: data.nonLitAcrylicColor,
+              non_lit_acrylic_thickness: data.nonLitAcrylicThickness,
+              non_lit_backing_shape: data.nonLitBackingShape,
+              non_lit_install: data.nonLitInstall,
+              non_lit_extras: data.nonLitExtras,
+              non_lit_note: data.nonLitNote,
+            };
+          case 'lit':
+            return {
+              lit_type: data.litType,
+              lit_text: data.litText,
+              lit_logo: data.litLogo,
+              lit_quantity: data.litQuantity,
+              lit_letter_height: data.litLetterHeight,
+              lit_rim_thickness: data.litRimThickness,
+              lit_total_length: data.litTotalLength,
+              lit_acrylic_color: data.litAcrylicColor,
+              lit_acrylic_color_other: data.litAcrylicColorOther,
+              lit_light_color: data.litLightColor,
+              lit_system: data.litSystem,
+              lit_usage: data.litUsage,
+              lit_install: data.litInstall,
+              lit_has_power: data.litHasPower,
+              lit_power_distance: data.litPowerDistance,
+              lit_wiring: data.litWiring,
+              lit_note: data.litNote,
+            };
+          case 'lightbox':
+            return {
+              lightbox_type: data.lightboxType,
+              lightbox_content: data.lightboxContent,
+              lightbox_width: data.lightboxWidth,
+              lightbox_height: data.lightboxHeight,
+              lightbox_depth: data.lightboxDepth,
+              lightbox_face_material: data.lightboxFaceMaterial,
+              lightbox_frame_material: data.lightboxFrameMaterial,
+              lightbox_frame_finish: data.lightboxFrameFinish,
+              lightbox_light_type: data.lightboxLightType,
+              lightbox_light_color: data.lightboxLightColor,
+              lightbox_light_position: data.lightboxLightPosition,
+              lightbox_print: data.lightboxPrint,
+              lightbox_print_type: data.lightboxPrintType,
+              lightbox_quantity: data.lightboxQuantity,
+              lightbox_install_type: data.lightboxInstallType,
+              lightbox_note: data.lightboxNote,
+            };
+          case 'vinyl':
+            return {
+              vinyl_type: data.vinylType,
+              vinyl_content: data.vinylContent,
+              vinyl_width: data.vinylWidth,
+              vinyl_height: data.vinylHeight,
+              vinyl_material_type: data.vinylMaterialType,
+              vinyl_material_spec: data.vinylMaterialSpec,
+              vinyl_print_quality: data.vinylPrintQuality,
+              vinyl_finish: data.vinylFinish,
+              vinyl_eyelet: data.vinylEyelet,
+              vinyl_quantity: data.vinylQuantity,
+              vinyl_install_type: data.vinylInstallType,
+              vinyl_install_note: data.vinylInstallNote,
+              vinyl_surface: data.vinylSurface,
+              vinyl_note: data.vinylNote,
+            };
+          case 'metal':
+            return {
+              metal_type: data.metalType,
+              metal_content: data.metalContent,
+              metal_width: data.metalWidth,
+              metal_height: data.metalHeight,
+              metal_material: data.metalMaterial,
+              metal_thickness: data.metalThickness,
+              metal_finish: data.metalFinish,
+              metal_coating: data.metalCoating,
+              metal_gate_type: data.metalGateType,
+              metal_gate_open: data.metalGateOpen,
+              metal_fence_height: data.metalFenceHeight,
+              metal_quantity: data.metalQuantity,
+              metal_install_type: data.metalInstallType,
+              metal_note: data.metalNote,
+              metal_accessories: data.metalAccessories,
+              metal_surface_prep: data.metalSurfacePrep,
+            };
+          case 'facade':
+            return {
+              facade_type: data.facadeType,
+              facade_content: data.facadeContent,
+              facade_width: data.facadeWidth,
+              facade_height: data.facadeHeight,
+              facade_material: data.facadeMaterial,
+              facade_thickness: data.facadeThickness,
+              facade_pattern: data.facadePattern,
+              facade_finish: data.facadeFinish,
+              facade_coating: data.facadeCoating,
+              facade_backing: data.facadeBacking,
+              facade_quantity: data.facadeQuantity,
+              facade_install_type: data.facadeInstallType,
+              facade_note: data.facadeNote,
+              facade_structure: data.facadeStructure,
+              facade_maintenance: data.facadeMaintenance,
+            };
+          case 'block-paint':
+            return {
+              block_paint_width: data.blockPaintWidth,
+              block_paint_length: data.blockPaintLength,
+              block_paint_material: data.blockPaintMaterial,
+              block_paint_material_other: data.blockPaintMaterialOther,
+              block_paint_text: data.blockPaintText,
+              block_paint_quantity: data.blockPaintQuantity,
+              block_paint_note: data.blockPaintNote,
+              // ข้อมูลการจัดส่ง
+              delivery_method: data.deliveryMethod,
+              delivery_name: data.deliveryName || data.deliveryPickupName || data.deliveryLalamoveName,
+              delivery_phone: data.deliveryPhone || data.deliveryPickupPhone || data.deliveryLalamovePhone,
+              delivery_address: data.deliveryAddress || data.deliveryLalamoveAddress,
+              delivery_gps: data.deliveryGps,
+              delivery_note: data.deliveryNote || data.deliveryPickupNote || data.deliveryLalamoveNote,
+            };
+          case 'cut-parts':
+            return {
+              cut_parts_material: data.cutPartsMaterial,
+              cut_parts_thickness: data.cutPartsThickness,
+              cut_parts_thickness_other: data.cutPartsThicknessOther,
+              cut_parts_input_type: data.cutPartsInputType,
+              cut_parts_design_by: data.cutPartsDesignBy,
+              cut_parts_quantity: data.cutPartsQuantity,
+              cut_parts_note: data.cutPartsNote,
+              // ข้อมูลการจัดส่ง
+              delivery_method: data.deliveryMethod,
+              delivery_name: data.deliveryName || data.deliveryPickupName || data.deliveryLalamoveName,
+              delivery_phone: data.deliveryPhone || data.deliveryPickupPhone || data.deliveryLalamovePhone,
+              delivery_address: data.deliveryAddress || data.deliveryLalamoveAddress,
+              delivery_gps: data.deliveryGps,
+              delivery_note: data.deliveryNote || data.deliveryPickupNote || data.deliveryLalamoveNote,
+            };
+          case 'install-only':
+            return {
+              install_only_type: data.installOnlyType,
+              install_only_type_other: data.installOnlyTypeOther,
+              install_only_details: data.installOnlyDetails,
+              install_only_size: data.installOnlySize,
+              install_only_has_power: data.installOnlyHasPower,
+              install_only_power_distance: data.installOnlyPowerDistance,
+              install_only_date: data.installOnlyDate,
+              install_only_time: data.installOnlyTime,
+              install_only_note: data.installOnlyNote,
+            };
+          default:
+            return {};
+        }
+      };
+
       // สร้างข้อมูลสำหรับส่ง API (ใช้ JSON)
       const apiData = {
         sign_type: data.signType,
@@ -523,7 +765,7 @@ export const useSignForm = () => {
         name: data.name,
         phone: data.phone,
         line_id: data.lineId,
-        shop_name: data.shopName,
+        shop_name: data.shopName || '-',
         address: data.address,
         design_file: data.designFile || null,
         design_file_url: uploadResults.designFileUrl || null,
@@ -556,6 +798,19 @@ export const useSignForm = () => {
         site_photo_install_url: uploadResults.sitePhotoInstallUrl || null,
         site_photo_power_url: uploadResults.sitePhotoPowerUrl || null,
         site_photo_surface_url: uploadResults.sitePhotoSurfaceUrl || null,
+        // ข้อมูลเฉพาะตามประเภทงาน (JSONB)
+        type_details: getTypeDetails(),
+        // ข้อมูลสถานที่ติดตั้งใหม่
+        install_site_name: data.installSiteName || null,
+        install_gps: data.installGps || null,
+        install_contact_name: data.installContactName || null,
+        install_contact_phone: data.installContactPhone || null,
+        install_site_type: data.installSiteType || null,
+        install_site_type_other: data.installSiteTypeOther || null,
+        install_height_detail: data.installHeightDetail || null,
+        install_access: data.installAccess || null,
+        install_equipment: data.installEquipment || null,
+        install_equipment_other: data.installEquipmentOther || null,
       };
 
       const response = await fetch('https://Singjumpen.com/api/quotes', {

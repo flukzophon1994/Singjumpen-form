@@ -47,9 +47,14 @@ const Section5Budget = ({ data, update }: Props) => {
       vinyl: `/assets/05-vinyl-banners/vinyl 0${exampleNum}.jpg`,
       metal: `/assets/06-steelwork-gates/gate 0${exampleNum}.jpg`,
       facade: `/assets/07-facade-cnc-patterns/facade 0${exampleNum}.jpg`,
+      'block-paint': `/assets/08-block-paint/block paint 0${exampleNum}.jpg`,
+      'cut-parts': `/assets/09-cut-parts/cut parts 0${exampleNum}.jpg`,
     };
     return paths[data.signType] || '—';
   };
+
+  // Check if delivery-only (no installation)
+  const isDeliveryOnly = data.signType === 'block-paint' || data.signType === 'cut-parts';
 
   // Label mappings for Thai display
   const plateTypeLabels: Record<string, string> = {
@@ -271,6 +276,23 @@ const Section5Budget = ({ data, update }: Props) => {
           ['ลายฉลุ', data.facadePattern || '—'],
           ['การติดตั้ง', installLabels[data.facadeInstallType] || data.facadeInstallType || '—'],
         ];
+      case 'block-paint':
+        return [
+          ['ขนาด', data.blockPaintWidth && data.blockPaintLength ? `${data.blockPaintWidth} × ${data.blockPaintLength} เซนติเมตร` : '—'],
+          ['จำนวน', data.blockPaintQuantity ? `${data.blockPaintQuantity} ชิ้น` : '—'],
+          ['วัสดุ', data.blockPaintMaterial === 'other' ? data.blockPaintMaterialOther : data.blockPaintMaterial || '—'],
+          ['ข้อความ', data.blockPaintText || '—'],
+          ['หมายเหตุ', data.blockPaintNote || '—'],
+        ];
+      case 'cut-parts':
+        return [
+          ['จำนวน', data.cutPartsQuantity ? `${data.cutPartsQuantity} ชิ้น` : '—'],
+          ['วัสดุ', data.cutPartsMaterial || '—'],
+          ['ความหนา', data.cutPartsThickness ? `${data.cutPartsThickness} มม.` : '—'],
+          ['ส่งแบบ', data.cutPartsInputType === 'file' ? 'ส่งไฟล์' : data.cutPartsInputType === 'sample' ? 'ส่งงานจริง' : '—'],
+          ['ร้านทำแบบ', data.cutPartsDesignBy === 'shop-design' ? 'ร้านทำแบบให้' : data.cutPartsDesignBy === 'customer-design' ? 'แจ้ง ก ย' : '—'],
+          ['หมายเหตุ', data.cutPartsNote || '—'],
+        ];
       default:
         return [];
     }
@@ -368,10 +390,27 @@ const Section5Budget = ({ data, update }: Props) => {
     ['ไฟล์ออกแบบ', getDesignFile()],
   ];
 
+  // Delivery labels
+  const deliveryMethodLabels: Record<string, string> = {
+    pickup: 'รับที่ร้าน',
+    delivery: 'จัดส่ง',
+    lalamove: 'เรียก Lalamove',
+  };
+
+  // ข้อมูลการรับสินค้า (สำหรับงานไม่มีติดตั้ง)
+  const deliveryRows: [string, string][] = [
+    ['วิธีการรับสินค้า', deliveryMethodLabels[data.deliveryMethod] || data.deliveryMethod || '—'],
+    ['ชื่อผู้รับ', data.deliveryName || data.deliveryPickupName || data.deliveryLalamoveName || '—'],
+    ['เบอร์โทร', data.deliveryPhone || data.deliveryPickupPhone || data.deliveryLalamovePhone || '—'],
+    ['ที่อยู่จัดส่ง', data.deliveryAddress || data.deliveryLalamoveAddress || '—'],
+    ['พิกัด GPS', data.deliveryGps || '—'],
+    ['หมายเหตุ', data.deliveryNote || data.deliveryPickupNote || data.deliveryLalamoveNote || '—'],
+  ];
+
   // ข้อมูลงบประมาณ (ขั้นตอนที่ 5)
   const budgetRows: [string, string][] = [
     ['งบประมาณ', budgetDisplay],
-    ['ค่าติดตั้ง', getLabel('includeInstall', data.includeInstall)],
+    ...(isDeliveryOnly ? [] : [['ค่าติดตั้ง', getLabel('includeInstall', data.includeInstall)] as [string, string]]),
     ['วันที่ต้องการ', formatThaiDate(data.deadline)],
     ['หมายเหตุ', data.note],
   ];
@@ -400,9 +439,11 @@ const Section5Budget = ({ data, update }: Props) => {
           )}
         </FieldGroup>
 
-        <FieldGroup label="รวมค่าติดตั้ง">
-          <ToggleGroup options={[{ label: 'รวมค่าติดตั้งด้วย', value: 'yes' }, { label: 'นำไปติดเอง', value: 'no' }]} value={data.includeInstall} onChange={v => update('includeInstall', v)} />
-        </FieldGroup>
+        {!isDeliveryOnly && (
+          <FieldGroup label="รวมค่าติดตั้ง">
+            <ToggleGroup options={[{ label: 'รวมค่าติดตั้งด้วย', value: 'yes' }, { label: 'นำไปติดเอง', value: 'no' }]} value={data.includeInstall} onChange={v => update('includeInstall', v)} />
+          </FieldGroup>
+        )}
       </FormCard>
 
       <FormCard heading="กำหนดการ">
@@ -470,37 +511,52 @@ const Section5Budget = ({ data, update }: Props) => {
         )}
       </div>
 
-      {/* Summary - ข้อมูลการติดตั้ง */}
+      {/* Summary - ข้อมูลการติดตั้ง หรือ การรับสินค้า */}
       <div className="bg-secondary border border-border rounded-xl p-5 mt-5">
         <div className="font-heading text-[11px] font-semibold tracking-[2px] uppercase text-muted-foreground/60 mb-3.5">
-          🔧 ข้อมูลการติดตั้ง
+          {isDeliveryOnly ? '📦 การรับสินค้า/จัดส่ง' : '🔧 ข้อมูลการติดตั้ง'}
         </div>
-        {installRows.map(([k, v]) => (
-          <div key={k} className="flex justify-between items-start gap-4 py-2 border-b border-muted last:border-b-0">
-            <span className="text-[13px] text-muted-foreground flex-shrink-0">{k}</span>
-            <span className="font-heading text-sm font-medium text-foreground/80 text-right">{v || '—'}</span>
-          </div>
-        ))}
-        {/* รูปหน้างาน - แยกแสดงเป็นรายการ */}
-        {photoRows.map(({ label, fileName, url }) => (
-          <div key={label} className="flex justify-between items-start gap-4 py-2 border-b border-muted last:border-b-0">
-            <span className="text-[13px] text-muted-foreground flex-shrink-0">{label}</span>
-            <div className="text-right">
-              <span className="font-heading text-sm font-medium text-foreground/80 block">{fileName || '—'}</span>
-              {url && (
-                <a
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-primary hover:underline"
-                >
-                  ดูรูปที่อัปโหลด
-                </a>
-              )}
-            </div>
-          </div>
-        ))}
-        {/* ไฟล์ออกแบบ */}
+        {isDeliveryOnly ? (
+          // แสดงข้อมูลการรับสินค้าสำหรับงานไม่มีติดตั้ง
+          <>
+            {deliveryRows.map(([k, v]) => (
+              <div key={k} className="flex justify-between items-start gap-4 py-2 border-b border-muted last:border-b-0">
+                <span className="text-[13px] text-muted-foreground flex-shrink-0">{k}</span>
+                <span className="font-heading text-sm font-medium text-foreground/80 text-right">{v || '—'}</span>
+              </div>
+            ))}
+          </>
+        ) : (
+          // แสดงข้อมูลการติดตั้งสำหรับงานทั่วไป
+          <>
+            {installRows.map(([k, v]) => (
+              <div key={k} className="flex justify-between items-start gap-4 py-2 border-b border-muted last:border-b-0">
+                <span className="text-[13px] text-muted-foreground flex-shrink-0">{k}</span>
+                <span className="font-heading text-sm font-medium text-foreground/80 text-right">{v || '—'}</span>
+              </div>
+            ))}
+            {/* รูปหน้างาน - แยกแสดงเป็นรายการ */}
+            {photoRows.map(({ label, fileName, url }) => (
+              <div key={label} className="flex justify-between items-start gap-4 py-2 border-b border-muted last:border-b-0">
+                <span className="text-[13px] text-muted-foreground flex-shrink-0">{label}</span>
+                <div className="text-right">
+                  <span className="font-heading text-sm font-medium text-foreground/80 block">{fileName || '—'}</span>
+                  {url && (
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-primary hover:underline"
+                    >
+                      ดูรูปที่อัปโหลด
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+        {/* ไฟล์ออกแบบ - แสดงทั้งสองกรณี */}
         {designFileRows.map(([k, v]) => (
           <div key={k} className="flex justify-between items-start gap-4 py-2 border-b border-muted last:border-b-0">
             <span className="text-[13px] text-muted-foreground flex-shrink-0">{k}</span>

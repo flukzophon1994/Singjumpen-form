@@ -46,10 +46,178 @@ const formatThaiDate = (dateStr: string): string => {
   return `${day} ${month} ${year}`;
 };
 
+// Label mappings matching Section5Budget.tsx
+const plateTypeLabels: Record<string, string> = {
+  acrylic: 'ป้ายอะคริลิค',
+  etched: 'ป้ายกัดกรด',
+  machine: 'ป้ายเนมเพลทเครื่องจักร',
+  room: 'ป้ายหน้าห้อง',
+};
+
+const nonLitTypeLabels: Record<string, string> = {
+  pvc: 'อักษรพลาสวูด',
+  acrylic: 'อักษรอะคริลิค',
+  'metal-rim': 'อักษรโลหะยกขอบ',
+  'ss-silver-gloss': 'อักษรสแตนเลสเงินเงา',
+  'ss-silver-hairline': 'อักษรสแตนเลสเงินแฮร์ไลน์',
+  'ss-gold-gloss': 'อักษรสแตนเลสทองเงา',
+  'ss-gold-hairline': 'อักษรสแตนเลสทองแฮร์ไลน์',
+  'ss-acrylic': 'อักษรสแตนเลสรองหลังอะคริลิค',
+};
+
+const litTypeLabels: Record<string, string> = {
+  'aluminum-rim': 'อักษรไฟสว่างหน้า ขอบอะลูมิเนียม',
+  'zinc-rim': 'อักษรไฟสว่างหน้า ขอบซิงค์พ่นสี',
+  'ss-silver-gloss': 'อักษรไฟสว่างหน้า ขอบสแตนเลสเงินเงา',
+  'ss-silver-hairline': 'อักษรไฟสว่างหน้า ขอบสแตนเลสเงินแฮร์ไลน์',
+  'ss-gold-gloss': 'อักษรไฟสว่างหน้า ขอบสแตนเลสทองเงา',
+  'ss-gold-hairline': 'อักษรไฟสว่างหน้า ขอบสแตนเลสทองแฮร์ไลน์',
+  'front-lit': 'อักษรด้านหน้า (Front Lit)',
+  'back-lit': 'อักษรด้านหลัง (Back Lit)',
+  'side-lit': 'อักษรขอบ (Side Lit)',
+  neon: 'อักษรนีออน (Neon)',
+};
+
+const lightboxTypeLabels: Record<string, string> = {
+  fabric: 'กล่องไฟผ้า',
+  acrylic: 'กล่องไฟอะคริลิค',
+  'round-acrylic': 'กล่องไฟอะคริลิคกลม',
+  'round-fabric': 'กล่องไฟผ้ากลม',
+};
+
+const vinylTypeLabels: Record<string, string> = {
+  banner: 'ป้ายไวนิลธรรมดา',
+  'backlit-banner': 'ป้ายไวนิล Backlit',
+  sticker: 'สติ๊กเกอร์ติดกระจก',
+  'floor-sticker': 'สติ๊กเกอร์ติดพื้น',
+  'vehicle-wrap': 'สติ๊กเกอร์ติดรถ',
+};
+
+const metalTypeLabels: Record<string, string> = {
+  fence: 'รั้วเหล็ก',
+  gate: 'ประตูเหล็ก',
+  'steel-structure': 'โครงสร้างเหล็ก',
+  railing: 'ราวบันได',
+  canopy: 'กันสาด',
+};
+
+const facadeTypeLabels: Record<string, string> = {
+  cnc: 'ฟาซาดลายฉลุ CNC',
+  slat: 'บังตา/ระแนง',
+  composite: 'คอมโพสิต',
+};
+
+const materialLabels: Record<string, string> = {
+  'acrylic-clear': 'อะคริลิคใส',
+  'acrylic-white': 'อะคริลิคขาว',
+  'acrylic-black': 'อะคริลิคดำ',
+  'acrylic-color': 'อะคริลิคสี',
+  stainless: 'สแตนเลส',
+  aluminum: 'อลูมิเนียม',
+  brass: 'ทองเหลือง',
+  'stainless-silver': 'สแตนเลสเงิน',
+  'stainless-gold': 'สแตนเลสทอง',
+  'stainless-black': 'สแตนเลสดำ',
+  'stainless-rose': 'สแตนเลสโรสโกลด์',
+  pvc: 'พลาสวูด',
+  steel: 'เหล็ก',
+};
+
+const thicknessLabels: Record<string, string> = {
+  '2mm': '2 มิลลิเมตร',
+  '3mm': '3 มิลลิเมตร',
+  '5mm': '5 มิลลิเมตร',
+  '8mm': '8 มิลลิเมตร',
+  '10mm': '10 มิลลิเมตร',
+  '15mm': '15 มิลลิเมตร',
+  '20mm': '20 มิลลิเมตร',
+};
+
+const finishLabels: Record<string, string> = {
+  'silver-gloss': 'เงินเงา',
+  'silver-hairline': 'เงินแฮร์ไลน์',
+  'gold-gloss': 'ทองเงา',
+  'gold-hairline': 'ทองแฮร์ไลน์',
+  'black-matte': 'ดำด้าน',
+  white: 'ขาว',
+  custom: 'สีพ่นตามแบบ',
+  mirror: 'กระจกเงา',
+  brush: 'แฮร์ไลน์',
+  paint: 'พ่นสี',
+  'raw-metal': 'โลหะดิบ',
+};
+
+const installLabels: Record<string, string> = {
+  nut: 'เจาะรูน็อต',
+  tape: 'ติดกาวสองหน้า',
+  silicone: 'ติดกาวซิลิโคน',
+  standoff: 'รองเสาลอย',
+  pickup: 'ไม่ติดตั้ง รับเฉพาะชิ้นงาน',
+  wall: 'ติดผนัง',
+  hanging: 'แขวน',
+  standing: 'ตั้งพื้น',
+};
+
+const detailLabels: Record<string, string> = {
+  'uv-print': 'พิมพ์ UV',
+  screen: 'สกรีน',
+  sticker: 'สติ๊กเกอร์ติด',
+  etched: 'กัดกรด',
+  engrave: 'กัดลาย',
+  laser: 'ยิงเลเซอร์',
+  carve: 'แกะสลัก',
+};
+
+const lightColorLabels: Record<string, string> = {
+  'cool-white': 'ขาว (Cool White)',
+  'warm-white': 'วอร์มไวท์',
+  rgb: 'RGB',
+  red: 'แดง',
+  green: 'เขียว',
+  blue: 'น้ำเงิน',
+  daylight: 'Daylight',
+  'milky-white': 'ขาวนม',
+};
+
+const systemLabels: Record<string, string> = {
+  'led-module': 'LED Module',
+  'led-strip': 'LED Strip',
+  neon: 'นีออน',
+  'led-pixel': 'LED Pixel',
+};
+
+const lightboxMaterialLabels: Record<string, string> = {
+  fabric: 'ผ้า',
+  acrylic: 'อะคริลิค',
+  'pet-g': 'PET-G',
+};
+
+const printQualityLabels: Record<string, string> = {
+  standard: 'มาตรฐาน',
+  high: 'สูง (High Resolution)',
+  'photo-grade': 'ระดับภาพถ่าย',
+};
+
+const heightDetailLabels: Record<string, string> = {
+  'under2m': 'ต่ำกว่า 2 เมตร',
+  '2-3m': '2–3 เมตร',
+  '3-5m': '3–5 เมตร',
+  'over5m': '5 เมตรขึ้นไป',
+};
+
+const installSiteTypeLabels: Record<string, string> = {
+  house: 'บ้าน',
+  shophouse: 'อาคารพาณิชย์',
+  shop: 'ร้านค้า',
+  factory: 'โรงงาน',
+  mall: 'ห้าง',
+  office: 'ออฟฟิศ',
+  condo: 'คอนโด',
+  other: 'อื่น ๆ',
+};
+
 const formatFormDataToEmail = (data: SignFormDataWithUrls): string => {
-  const size = data.signWidth && data.signHeight ? `${data.signWidth} × ${data.signHeight} cm` : '—';
   const budgetDisplay = data.budgetCustom || (data.budget && data.budget !== 'other' ? `${parseInt(data.budget).toLocaleString()} บาท` : '—');
-  const letterHeight = data.letterHeight === 'ระบุเอง' ? data.letterHeightCustom : data.letterHeight;
   
   const radioLabels: Record<string, Record<string, string>> = {
     signType: {
@@ -60,6 +228,8 @@ const formatFormDataToEmail = (data: SignFormDataWithUrls): string => {
       vinyl: 'งานป้ายไวนิล',
       metal: 'งานเหล็ก / รั้ว / ประตู',
       facade: 'งานฟาซาด / บังตา / ลายฉลุ',
+      'block-paint': 'งานบล็อคพ่นสี',
+      'cut-parts': 'งานตัดอะไหล่',
     },
     designFile: { have: 'มีไฟล์แล้ว', no: 'ให้ร้านออกแบบ' },
     logo: { yes: 'ใส่โลโก้', no: 'ไม่ใส่โลโก้' },
@@ -88,91 +258,90 @@ const formatFormDataToEmail = (data: SignFormDataWithUrls): string => {
   if (data.sitePhotoPowerUrl) attachmentsList.push(`📎 รูปจุดไฟ/ปลั๊ก: ${data.sitePhotoPowerUrl}`);
   if (data.sitePhotoSurfaceUrl) attachmentsList.push(`📎 รูปพื้นที่ติดตั้ง: ${data.sitePhotoSurfaceUrl}`);
 
-  // รายละเอียดตามประเภทงาน
+  // รายละเอียดตามประเภทงาน - แสดงแบบสรุปเหมือน Section5Budget
   let typeSpecificDetails = '';
   
   if (data.signType === 'plate') {
     typeSpecificDetails = `
 📋 รายละเอียดป้ายแผ่น/เนมเพลท
 ----------------------------------------------
-ประเภท: ${data.plateType || '—'}
+ประเภท: ${plateTypeLabels[data.plateType] || data.plateType || '—'}
 ข้อความ/เนื้อหา: ${data.plateContent || '—'}
-ขนาด: ${data.plateWidth || '—'} × ${data.plateHeight || '—'} cm
-จำนวน: ${data.plateQuantity || '—'} ชิ้น
-วัสดุ: ${data.plateMaterial || '—'}
+ขนาด: ${data.plateWidth && data.plateHeight ? `${data.plateWidth} × ${data.plateHeight} เซนติเมตร` : '—'}
+จำนวน: ${data.plateQuantity ? `${data.plateQuantity} ชิ้น` : '—'}
+วัสดุ: ${materialLabels[data.plateMaterial] || data.plateMaterial || '—'}
 ความหนา: ${data.plateThickness || '—'}
-รายละเอียดงาน: ${data.plateDetail || '—'}
-สี/ฟินิช: ${data.plateFinish || '—'}
-วิธีติดตั้ง: ${data.plateInstall || '—'}
+รายละเอียดงาน: ${detailLabels[data.plateDetail] || data.plateDetail || '—'}
+สี/ฟินิช: ${finishLabels[data.plateFinish] || data.plateFinish || '—'}
+วิธีติดตั้ง: ${installLabels[data.plateInstall] || data.plateInstall || '—'}
 หมายเหตุ: ${data.plateNote || '—'}
 `;
   } else if (data.signType === 'non-lit') {
     typeSpecificDetails = `
 📋 รายละเอียดงานอักษรไม่ไฟ
 ----------------------------------------------
-ประเภท: ${data.nonLitType || '—'}
+ประเภท: ${nonLitTypeLabels[data.nonLitType] || data.nonLitType || '—'}
 ข้อความ: ${data.nonLitText || '—'}
-จำนวน: ${data.nonLitQuantity || '—'} ชิ้น
-ความสูงตัวอักษร: ${data.nonLitLetterHeight || '—'}
-วัสดุ: ${data.nonLitMaterial || '—'}
-ฟินิช: ${data.nonLitFinish || '—'}
-วิธีติดตั้ง: ${data.nonLitInstall || '—'}
+จำนวน: ${data.nonLitQuantity ? `${data.nonLitQuantity} ชิ้น` : '—'}
+ความสูงตัวอักษร: ${data.nonLitLetterHeight ? `${data.nonLitLetterHeight} เซนติเมตร` : '—'}
+วัสดุ: ${materialLabels[data.nonLitMaterial] || data.nonLitMaterial || '—'}
+ฟินิช: ${finishLabels[data.nonLitFinish] || data.nonLitFinish || '—'}
+วิธีติดตั้ง: ${installLabels[data.nonLitInstall] || data.nonLitInstall || '—'}
 หมายเหตุ: ${data.nonLitNote || '—'}
 `;
   } else if (data.signType === 'lit') {
     typeSpecificDetails = `
 📋 รายละเอียดงานอักษรไฟ
 ----------------------------------------------
-ประเภท: ${data.litType || '—'}
+ประเภท: ${litTypeLabels[data.litType] || data.litType || '—'}
 ข้อความ: ${data.litText || '—'}
 โลโก้: ${data.litLogo || '—'}
-จำนวน: ${data.litQuantity || '—'} ชิ้น
-ความสูงตัวอักษร: ${data.litLetterHeight || '—'}
+จำนวน: ${data.litQuantity ? `${data.litQuantity} ชิ้น` : '—'}
+ความสูงตัวอักษร: ${data.litLetterHeight ? `${data.litLetterHeight} เซนติเมตร` : '—'}
 สีอะคริลิค: ${data.litAcrylicColor || '—'}
-สีไฟ: ${data.litLightColor || '—'}
-ระบบไฟ: ${data.litSystem || '—'}
-วิธีติดตั้ง: ${data.litInstall || '—'}
+สีไฟ: ${lightColorLabels[data.litLightColor] || data.litLightColor || '—'}
+ระบบไฟ: ${systemLabels[data.litSystem] || data.litSystem || '—'}
+วิธีติดตั้ง: ${installLabels[data.litInstall] || data.litInstall || '—'}
 หมายเหตุ: ${data.litNote || '—'}
 `;
   } else if (data.signType === 'lightbox') {
     typeSpecificDetails = `
 📋 รายละเอียดงานกล่องไฟ
 ----------------------------------------------
-ประเภท: ${data.lightboxType || '—'}
+ประเภท: ${lightboxTypeLabels[data.lightboxType] || data.lightboxType || '—'}
 ข้อความ/เนื้อหา: ${data.lightboxContent || '—'}
-ขนาด: ${data.lightboxWidth || '—'} × ${data.lightboxHeight || '—'} × ${data.lightboxDepth || '—'} cm
-จำนวน: ${data.lightboxQuantity || '—'} ชิ้น
-วัสดุหน้า: ${data.lightboxFaceMaterial || '—'}
+ขนาด: ${data.lightboxWidth && data.lightboxHeight ? `${data.lightboxWidth} × ${data.lightboxHeight} × ${data.lightboxDepth || '-'} เซนติเมตร` : '—'}
+จำนวน: ${data.lightboxQuantity ? `${data.lightboxQuantity} ชิ้น` : '—'}
+วัสดุหน้า: ${lightboxMaterialLabels[data.lightboxFaceMaterial] || data.lightboxFaceMaterial || '—'}
 วัสดุเฟรม: ${data.lightboxFrameMaterial || '—'}
-สีไฟ: ${data.lightboxLightColor || '—'}
+สีไฟ: ${lightColorLabels[data.lightboxLightColor] || data.lightboxLightColor || '—'}
 หมายเหตุ: ${data.lightboxNote || '—'}
 `;
   } else if (data.signType === 'vinyl') {
     typeSpecificDetails = `
 📋 รายละเอียดงานป้ายไวนิล
 ----------------------------------------------
-ประเภท: ${data.vinylType || '—'}
+ประเภท: ${vinylTypeLabels[data.vinylType] || data.vinylType || '—'}
 ข้อความ/เนื้อหา: ${data.vinylContent || '—'}
-ขนาด: ${data.vinylWidth || '—'} × ${data.vinylHeight || '—'} cm
-จำนวน: ${data.vinylQuantity || '—'} ชิ้น
+ขนาด: ${data.vinylWidth && data.vinylHeight ? `${data.vinylWidth} × ${data.vinylHeight} เซนติเมตร` : '—'}
+จำนวน: ${data.vinylQuantity ? `${data.vinylQuantity} ชิ้น` : '—'}
 วัสดุ: ${data.vinylMaterialType || '—'}
-คุณภาพการพิมพ์: ${data.vinylPrintQuality || '—'}
-การติดตั้ง: ${data.vinylInstallType || '—'}
+คุณภาพการพิมพ์: ${printQualityLabels[data.vinylPrintQuality] || data.vinylPrintQuality || '—'}
+การติดตั้ง: ${installLabels[data.vinylInstallType] || data.vinylInstallType || '—'}
 หมายเหตุ: ${data.vinylNote || '—'}
 `;
   } else if (data.signType === 'metal') {
     typeSpecificDetails = `
 📋 รายละเอียดงานเหล็ก/รั้ว/ประตู
 ----------------------------------------------
-ประเภท: ${data.metalType || '—'}
+ประเภท: ${metalTypeLabels[data.metalType] || data.metalType || '—'}
 ข้อความ/เนื้อหา: ${data.metalContent || '—'}
-ขนาด: ${data.metalWidth || '—'} × ${data.metalHeight || '—'} cm
-จำนวน: ${data.metalQuantity || '—'} ชิ้น
-วัสดุ: ${data.metalMaterial || '—'}
-ความหนา: ${data.metalThickness || '—'}
-ฟินิช: ${data.metalFinish || '—'}
+ขนาด: ${data.metalWidth && data.metalHeight ? `${data.metalWidth} × ${data.metalHeight} เซนติเมตร` : '—'}
+จำนวน: ${data.metalQuantity ? `${data.metalQuantity} ชิ้น` : '—'}
+วัสดุ: ${materialLabels[data.metalMaterial] || data.metalMaterial || '—'}
+ฟินิช: ${finishLabels[data.metalFinish] || data.metalFinish || '—'}
 การชุบ/เคลือบ: ${data.metalCoating || '—'}
-วิธีติดตั้ง: ${data.metalInstallType || '—'}
+วิธีติดตั้ง: ${installLabels[data.metalInstallType] || data.metalInstallType || '—'}
 อุปกรณ์เสริม: ${data.metalAccessories || '—'}
 หมายเหตุ: ${data.metalNote || '—'}
 `;
@@ -180,15 +349,13 @@ const formatFormDataToEmail = (data: SignFormDataWithUrls): string => {
     typeSpecificDetails = `
 📋 รายละเอียดงานฟาซาด/บังตา/ลายฉลุ
 ----------------------------------------------
-ประเภท: ${data.facadeType || '—'}
+ประเภท: ${facadeTypeLabels[data.facadeType] || data.facadeType || '—'}
 ข้อความ/เนื้อหา: ${data.facadeContent || '—'}
-ขนาด: ${data.facadeWidth || '—'} × ${data.facadeHeight || '—'} cm
-จำนวน: ${data.facadeQuantity || '—'} ชิ้น
-วัสดุ: ${data.facadeMaterial || '—'}
-ความหนา: ${data.facadeThickness || '—'}
-ลายฉลุ/ดีไซน์: ${data.facadePattern || '—'}
-สี/ฟินิช: ${data.facadeFinish || '—'}
-โครงสร้าง: ${data.facadeStructure || '—'}
+ขนาด: ${data.facadeWidth && data.facadeHeight ? `${data.facadeWidth} × ${data.facadeHeight} เซนติเมตร` : '—'}
+จำนวน: ${data.facadeQuantity ? `${data.facadeQuantity} ชิ้น` : '—'}
+วัสดุ: ${materialLabels[data.facadeMaterial] || data.facadeMaterial || '—'}
+ลายฉลุ: ${data.facadePattern || '—'}
+การติดตั้ง: ${installLabels[data.facadeInstallType] || data.facadeInstallType || '—'}
 หมายเหตุ: ${data.facadeNote || '—'}
 `;
   } else if (data.signType === 'install-only') {
@@ -198,14 +365,27 @@ const formatFormDataToEmail = (data: SignFormDataWithUrls): string => {
 ประเภทบริการ: ${data.installOnlyType || '—'}
 รายละเอียดงาน: ${data.installOnlyDetails || '—'}
 ขนาด/ปริมาณ: ${data.installOnlySize || '—'}
-ความสูงจากพื้น: ${data.installOnlyHeight || '—'}
-วิธีเข้าถึง: ${data.installOnlyAccess || '—'}
-ผนัง/พื้นผิว: ${data.installOnlyWall || '—'}
-มีไฟรอไว้: ${data.installOnlyHasPower || '—'}
-ระยะจากจุดไฟ: ${data.installOnlyPowerDistance || '—'} เมตร
-วันที่ต้องการ: ${formatThaiDate(data.installOnlyDate)}
-ช่วงเวลา: ${data.installOnlyTime || '—'}
-หมายเหตุ: ${data.installOnlyNote || '—'}
+`;
+  } else if (data.signType === 'block-paint') {
+    typeSpecificDetails = `
+📋 รายละเอียดงานบล็อคพ่นสี
+----------------------------------------------
+ขนาด: ${data.blockPaintWidth && data.blockPaintLength ? `${data.blockPaintWidth} × ${data.blockPaintLength} เซนติเมตร` : '—'}
+จำนวน: ${data.blockPaintQuantity ? `${data.blockPaintQuantity} ชิ้น` : '—'}
+วัสดุ: ${data.blockPaintMaterial === 'other' ? data.blockPaintMaterialOther : data.blockPaintMaterial || '—'}
+ข้อความ: ${data.blockPaintText || '—'}
+หมายเหตุ: ${data.blockPaintNote || '—'}
+`;
+  } else if (data.signType === 'cut-parts') {
+    typeSpecificDetails = `
+📋 รายละเอียดงานตัดอะไหล่
+----------------------------------------------
+จำนวน: ${data.cutPartsQuantity ? `${data.cutPartsQuantity} ชิ้น` : '—'}
+วัสดุ: ${data.cutPartsMaterial || '—'}
+ความหนา: ${data.cutPartsThickness ? `${data.cutPartsThickness} มม.` : '—'}
+ส่งแบบ: ${data.cutPartsInputType === 'file' ? 'ส่งไฟล์' : data.cutPartsInputType === 'sample' ? 'ส่งงานจริง' : '—'}
+ร้านทำแบบ: ${data.cutPartsDesignBy === 'shop-design' ? 'ร้านทำแบบให้' : data.cutPartsDesignBy === 'customer-design' ? 'แจ้ง ก ย' : '—'}
+หมายเหตุ: ${data.cutPartsNote || '—'}
 `;
   }
 
@@ -248,6 +428,7 @@ ${data.address || '—'}
 ${data.signTypeExample ? `ตัวอย่างที่เลือก: แบบที่ ${data.signTypeExample}` : ''}
 ${typeSpecificDetails}
 ${installSiteDetails}
+${data.signType !== 'block-paint' && data.signType !== 'cut-parts' ? `
 🔧 ข้อมูลการติดตั้ง
 ----------------------------------------------
 ความสูงจากพื้น: ${data.installHeight || '—'}
@@ -256,6 +437,7 @@ ${installSiteDetails}
 ลักษณะติดตั้ง: ${getLabel('mountType', data.mountType)}
 ป้ายเก่า: ${getLabel('oldSign', data.oldSign)}
 รูปหน้างาน: ${getLabel('sitePhoto', data.sitePhoto)}
+` : ''}
 
 📎 ไฟล์แนบ (Cloudinary URLs)
 ----------------------------------------------
@@ -323,6 +505,16 @@ export const sendQuoteEmail = async (
       sign_type_example_url: data.signTypeExampleUrl || '',
       // รูปตัวอย่างที่เลือก
       sign_type_example: formData.signTypeExample,
+      // ข้อมูลการจัดส่ง (สำหรับงานไม่มีติดตั้ง)
+      delivery_method: data.deliveryMethod || '',
+      delivery_method_label: data.deliveryMethod === 'pickup' ? 'รับที่ร้าน' : data.deliveryMethod === 'delivery' ? 'จัดส่ง' : data.deliveryMethod === 'lalamove' ? 'เรียก Lalamove' : '',
+      delivery_name: data.deliveryName || data.deliveryPickupName || data.deliveryLalamoveName || '',
+      delivery_phone: data.deliveryPhone || data.deliveryPickupPhone || data.deliveryLalamovePhone || '',
+      delivery_address: data.deliveryAddress || data.deliveryLalamoveAddress || '',
+      delivery_gps: data.deliveryGps || '',
+      delivery_note: data.deliveryNote || data.deliveryPickupNote || data.deliveryLalamoveNote || '',
+      // Flag สำหรับตรวจสอบว่าเป็นงานไม่มีติดตั้งหรือไม่
+      is_delivery_only: data.signType === 'block-paint' || data.signType === 'cut-parts' ? 'true' : 'false',
     };
 
     const response = await emailjs.send(

@@ -10,8 +10,11 @@ import Section3Lightbox from '@/components/sign-form/Section3Lightbox';
 import Section3Vinyl from '@/components/sign-form/Section3Vinyl';
 import Section3Metal from '@/components/sign-form/Section3Metal';
 import Section3Facade from '@/components/sign-form/Section3Facade';
+import Section3BlockPaint from '@/components/sign-form/Section3BlockPaint';
+import Section3CutParts from '@/components/sign-form/Section3CutParts';
 import Section3InstallOnly from '@/components/sign-form/Section3InstallOnly';
 import Section4Install from '@/components/sign-form/Section4Install';
+import Section4Delivery from '@/components/sign-form/Section4Delivery';
 import Section5Budget from '@/components/sign-form/Section5Budget';
 import SuccessScreen from '@/components/sign-form/SuccessScreen';
 import NavBar from '@/components/sign-form/NavBar';
@@ -20,6 +23,9 @@ import { useSignForm } from '@/components/sign-form/useSignForm';
 
 const Index = () => {
   const { step, data, update, updateFile, goTo, next, prev, submitted, isSubmitting, submitError, emailSent, emailError } = useSignForm();
+
+  // ตรวจสอบว่าเป็นงานที่ไม่มีติดตั้ง (รับที่ร้าน/จัดส่ง)
+  const isDeliveryOnly = data.signType === 'block-paint' || data.signType === 'cut-parts';
 
   // แสดง Section3 ตามประเภทป้ายที่เลือก
   const renderSection3 = () => {
@@ -38,11 +44,23 @@ const Index = () => {
         return <Section3Metal data={data} update={update} updateFile={updateFile} />;
       case 'facade':
         return <Section3Facade data={data} update={update} updateFile={updateFile} />;
+      case 'block-paint':
+        return <Section3BlockPaint data={data} update={update} updateFile={updateFile} />;
+      case 'cut-parts':
+        return <Section3CutParts data={data} update={update} updateFile={updateFile} />;
       case 'install-only':
         return <Section3InstallOnly data={data} update={update} updateFile={updateFile} />;
       default:
         return <Section3Plate data={data} update={update} updateFile={updateFile} />;
     }
+  };
+
+  // แสดง Section4 ตามประเภทงาน (ติดตั้งหรือจัดส่ง)
+  const renderSection4 = () => {
+    if (isDeliveryOnly) {
+      return <Section4Delivery data={data} update={update} />;
+    }
+    return <Section4Install data={data} update={update} updateFile={updateFile} />;
   };
 
   return (
@@ -57,7 +75,7 @@ const Index = () => {
             {step === 1 && <Section1Contact data={data} update={update} />}
             {step === 2 && <Section2Type data={data} update={update} />}
             {step === 3 && renderSection3()}
-            {step === 4 && <Section4Install data={data} update={update} updateFile={updateFile} />}
+            {step === 4 && renderSection4()}
             {step === 5 && <Section5Budget data={data} update={update} />}
           </main>
           <NavBar
