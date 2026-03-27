@@ -367,12 +367,17 @@ const formatFormDataToEmail = (data: SignFormDataWithUrls): string => {
 ขนาด/ปริมาณ: ${data.installOnlySize || '—'}
 `;
   } else if (data.signType === 'block-paint') {
+    const blockPaintMaterialLabels: Record<string, string> = {
+      'zinc-0.5': 'สังกะสี 0.5 มม.',
+      'zinc-0.8': 'สังกะสี 0.8 มม.',
+      'zinc-1.0': 'สังกะสี 1.0 มม.',
+    };
     typeSpecificDetails = `
 📋 รายละเอียดงานบล็อคพ่นสี
 ----------------------------------------------
 ขนาด: ${data.blockPaintWidth && data.blockPaintLength ? `${data.blockPaintWidth} × ${data.blockPaintLength} เซนติเมตร` : '—'}
 จำนวน: ${data.blockPaintQuantity ? `${data.blockPaintQuantity} ชิ้น` : '—'}
-วัสดุ: ${data.blockPaintMaterial === 'other' ? data.blockPaintMaterialOther : data.blockPaintMaterial || '—'}
+วัสดุ: ${data.blockPaintMaterial === 'other' ? data.blockPaintMaterialOther : blockPaintMaterialLabels[data.blockPaintMaterial || ''] || data.blockPaintMaterial || '—'}
 ข้อความ: ${data.blockPaintText || '—'}
 หมายเหตุ: ${data.blockPaintNote || '—'}
 `;
@@ -388,6 +393,20 @@ const formatFormDataToEmail = (data: SignFormDataWithUrls): string => {
 หมายเหตุ: ${data.cutPartsNote || '—'}
 `;
   }
+
+  // ข้อมูลการรับสินค้า/จัดส่ง (สำหรับงานไม่มีติดตั้ง)
+  const deliveryDetails = (data.signType === 'block-paint' || data.signType === 'cut-parts') && data.deliveryMethod
+    ? `
+📦 ข้อมูลการรับสินค้า/จัดส่ง
+----------------------------------------------
+วิธีการรับสินค้า: ${data.deliveryMethod === 'pickup' ? 'รับที่ร้าน' : data.deliveryMethod === 'delivery' ? 'จัดส่ง' : data.deliveryMethod === 'lalamove' ? 'เรียก Lalamove' : '—'}
+ชื่อผู้รับ: ${data.deliveryName || data.deliveryPickupName || data.deliveryLalamoveName || '—'}
+เบอร์โทร: ${data.deliveryPhone || data.deliveryPickupPhone || data.deliveryLalamovePhone || '—'}
+ที่อยู่จัดส่ง: ${data.deliveryAddress || data.deliveryLalamoveAddress || '—'}
+พิกัด GPS: ${data.deliveryGps || '—'}
+หมายเหตุ: ${data.deliveryNote || data.deliveryPickupNote || data.deliveryLalamoveNote || '—'}
+`
+    : '';
 
   // ข้อมูลติดตั้งหน้างานใหม่
   const installSiteDetails = data.installSiteName || data.installGps || data.installContactName || data.installContactPhone || data.installSiteType
@@ -428,6 +447,7 @@ ${data.address || '—'}
 ${data.signTypeExample ? `ตัวอย่างที่เลือก: แบบที่ ${data.signTypeExample}` : ''}
 ${typeSpecificDetails}
 ${installSiteDetails}
+${deliveryDetails}
 ${data.signType !== 'block-paint' && data.signType !== 'cut-parts' ? `
 🔧 ข้อมูลการติดตั้ง
 ----------------------------------------------

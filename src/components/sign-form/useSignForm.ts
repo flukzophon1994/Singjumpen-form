@@ -563,25 +563,25 @@ export const useSignForm = () => {
         return null;
       };
       
-      // สร้าง type_details ตามประเภทงาน
+      // สร้าง type_details ตามประเภทงาน - ใช้ค่าภาษาไทยสำหรับบันทึกลง database
       const getTypeDetails = (): Record<string, unknown> => {
         switch (data.signType) {
           case 'plate':
             return {
-              plate_type: data.plateType,
+              plate_type: getLabel('plateType', data.plateType),
               plate_content: data.plateContent,
               plate_width: data.plateWidth,
               plate_height: data.plateHeight,
               plate_quantity: data.plateQuantity,
-              plate_material: data.plateMaterial,
+              plate_material: getLabel('plateMaterial', data.plateMaterial),
               plate_material_color: data.plateMaterialColor,
               plate_material_other: data.plateMaterialOther,
-              plate_thickness: data.plateThickness,
+              plate_thickness: getLabel('plateThickness', data.plateThickness),
               plate_thickness_other: data.plateThicknessOther,
-              plate_detail: data.plateDetail,
-              plate_finish: data.plateFinish,
+              plate_detail: getLabel('plateDetail', data.plateDetail),
+              plate_finish: getLabel('plateFinish', data.plateFinish),
               plate_finish_custom: data.plateFinishCustom,
-              plate_install: data.plateInstall,
+              plate_install: getLabel('plateInstall', data.plateInstall),
               plate_note: data.plateNote,
               // เนมเพลทเครื่องจักร
               plate_model: data.plateModel,
@@ -591,61 +591,61 @@ export const useSignForm = () => {
               plate_prod_date: data.plateProdDate,
               plate_logo: data.plateLogo,
               plate_warning: data.plateWarning,
-              plate_data_same: data.plateDataSame,
+              plate_data_same: getLabel('plateDataSame', data.plateDataSame),
             };
           case 'non-lit':
             return {
-              non_lit_type: data.nonLitType,
+              non_lit_type: getLabel('nonLitType', data.nonLitType),
               non_lit_text: data.nonLitText,
               non_lit_quantity: data.nonLitQuantity,
               non_lit_letter_height: data.nonLitLetterHeight,
               non_lit_thickness: data.nonLitThickness,
               non_lit_total_length: data.nonLitTotalLength,
-              non_lit_material: data.nonLitMaterial,
+              non_lit_material: getLabel('nonLitMaterial', data.nonLitMaterial),
               non_lit_material_other: data.nonLitMaterialOther,
-              non_lit_finish: data.nonLitFinish,
+              non_lit_finish: getLabel('nonLitFinish', data.nonLitFinish),
               non_lit_finish_color: data.nonLitFinishColor,
-              non_lit_material_thickness: data.nonLitMaterialThickness,
+              non_lit_material_thickness: getLabel('nonLitMaterialThickness', data.nonLitMaterialThickness),
               non_lit_material_thickness_other: data.nonLitMaterialThicknessOther,
               non_lit_acrylic_color: data.nonLitAcrylicColor,
-              non_lit_acrylic_thickness: data.nonLitAcrylicThickness,
-              non_lit_backing_shape: data.nonLitBackingShape,
-              non_lit_install: data.nonLitInstall,
-              non_lit_extras: data.nonLitExtras,
+              non_lit_acrylic_thickness: getLabel('nonLitAcrylicThickness', data.nonLitAcrylicThickness),
+              non_lit_backing_shape: getLabel('nonLitBackingShape', data.nonLitBackingShape),
+              non_lit_install: getLabel('nonLitInstall', data.nonLitInstall),
+              non_lit_extras: getLabel('nonLitExtras', data.nonLitExtras),
               non_lit_note: data.nonLitNote,
             };
           case 'lit':
             return {
-              lit_type: data.litType,
+              lit_type: getLabel('litType', data.litType),
               lit_text: data.litText,
               lit_logo: data.litLogo,
               lit_quantity: data.litQuantity,
               lit_letter_height: data.litLetterHeight,
               lit_rim_thickness: data.litRimThickness,
               lit_total_length: data.litTotalLength,
-              lit_acrylic_color: data.litAcrylicColor,
+              lit_acrylic_color: getLabel('litAcrylicColor', data.litAcrylicColor),
               lit_acrylic_color_other: data.litAcrylicColorOther,
-              lit_light_color: data.litLightColor,
-              lit_system: data.litSystem,
-              lit_usage: data.litUsage,
-              lit_install: data.litInstall,
-              lit_has_power: data.litHasPower,
+              lit_light_color: getLabel('litLightColor', data.litLightColor),
+              lit_system: getLabel('litSystem', data.litSystem),
+              lit_usage: getLabel('litUsage', data.litUsage),
+              lit_install: getLabel('litInstall', data.litInstall),
+              lit_has_power: data.litHasPower === 'yes' ? 'มี' : data.litHasPower === 'no' ? 'ไม่มี' : null,
               lit_power_distance: data.litPowerDistance,
-              lit_wiring: data.litWiring,
+              lit_wiring: data.litWiring === 'yes' ? 'ต้องการ' : data.litWiring === 'no' ? 'ไม่ต้องการ' : null,
               lit_note: data.litNote,
             };
           case 'lightbox':
             return {
-              lightbox_type: data.lightboxType,
+              lightbox_type: getLabel('lightboxType', data.lightboxType),
               lightbox_content: data.lightboxContent,
               lightbox_width: data.lightboxWidth,
               lightbox_height: data.lightboxHeight,
               lightbox_depth: data.lightboxDepth,
-              lightbox_face_material: data.lightboxFaceMaterial,
-              lightbox_frame_material: data.lightboxFrameMaterial,
+              lightbox_face_material: getLabel('lightboxFace', data.lightboxFaceMaterial),
+              lightbox_frame_material: getLabel('lightboxFrame', data.lightboxFrameMaterial),
               lightbox_frame_finish: data.lightboxFrameFinish,
               lightbox_light_type: data.lightboxLightType,
-              lightbox_light_color: data.lightboxLightColor,
+              lightbox_light_color: getLabel('lightboxLightSystem', data.lightboxLightColor),
               lightbox_light_position: data.lightboxLightPosition,
               lightbox_print: data.lightboxPrint,
               lightbox_print_type: data.lightboxPrintType,
@@ -655,43 +655,43 @@ export const useSignForm = () => {
             };
           case 'vinyl':
             return {
-              vinyl_type: data.vinylType,
+              vinyl_type: getLabel('vinylType', data.vinylType),
               vinyl_content: data.vinylContent,
               vinyl_width: data.vinylWidth,
               vinyl_height: data.vinylHeight,
-              vinyl_material_type: data.vinylMaterialType,
+              vinyl_material_type: getLabel('vinylMaterialType', data.vinylMaterialType),
               vinyl_material_spec: data.vinylMaterialSpec,
-              vinyl_print_quality: data.vinylPrintQuality,
-              vinyl_finish: data.vinylFinish,
+              vinyl_print_quality: getLabel('vinylPrintQuality', data.vinylPrintQuality),
+              vinyl_finish: getLabel('vinylFinish', data.vinylFinish),
               vinyl_eyelet: data.vinylEyelet,
               vinyl_quantity: data.vinylQuantity,
-              vinyl_install_type: data.vinylInstallType,
+              vinyl_install_type: getLabel('vinylInstallType', data.vinylInstallType),
               vinyl_install_note: data.vinylInstallNote,
-              vinyl_surface: data.vinylSurface,
+              vinyl_surface: getLabel('vinylSurface', data.vinylSurface),
               vinyl_note: data.vinylNote,
             };
           case 'metal':
             return {
-              metal_type: data.metalType,
+              metal_type: getLabel('metalType', data.metalType),
               metal_content: data.metalContent,
               metal_width: data.metalWidth,
               metal_height: data.metalHeight,
-              metal_material: data.metalMaterial,
-              metal_thickness: data.metalThickness,
+              metal_material: getLabel('metalMaterial', data.metalMaterial),
+              metal_thickness: getLabel('metalThickness', data.metalThickness),
               metal_finish: data.metalFinish,
-              metal_coating: data.metalCoating,
+              metal_coating: getLabel('metalCoating', data.metalCoating),
               metal_gate_type: data.metalGateType,
               metal_gate_open: data.metalGateOpen,
               metal_fence_height: data.metalFenceHeight,
               metal_quantity: data.metalQuantity,
-              metal_install_type: data.metalInstallType,
+              metal_install_type: getLabel('metalInstallType', data.metalInstallType),
               metal_note: data.metalNote,
-              metal_accessories: data.metalAccessories,
-              metal_surface_prep: data.metalSurfacePrep,
+              metal_accessories: getLabel('metalAccessories', data.metalAccessories),
+              metal_surface_prep: getLabel('metalSurfacePrep', data.metalSurfacePrep),
             };
           case 'facade':
             return {
-              facade_type: data.facadeType,
+              facade_type: getLabel('facadeType', data.facadeType),
               facade_content: data.facadeContent,
               facade_width: data.facadeWidth,
               facade_height: data.facadeHeight,
@@ -711,13 +711,13 @@ export const useSignForm = () => {
             return {
               block_paint_width: data.blockPaintWidth,
               block_paint_length: data.blockPaintLength,
-              block_paint_material: data.blockPaintMaterial,
+              block_paint_material: getLabel('blockPaintMaterial', data.blockPaintMaterial),
               block_paint_material_other: data.blockPaintMaterialOther,
               block_paint_text: data.blockPaintText,
               block_paint_quantity: data.blockPaintQuantity,
               block_paint_note: data.blockPaintNote,
               // ข้อมูลการจัดส่ง
-              delivery_method: data.deliveryMethod,
+              delivery_method: getLabel('deliveryMethod', data.deliveryMethod),
               delivery_name: data.deliveryName || data.deliveryPickupName || data.deliveryLalamoveName,
               delivery_phone: data.deliveryPhone || data.deliveryPickupPhone || data.deliveryLalamovePhone,
               delivery_address: data.deliveryAddress || data.deliveryLalamoveAddress,
@@ -726,15 +726,15 @@ export const useSignForm = () => {
             };
           case 'cut-parts':
             return {
-              cut_parts_material: data.cutPartsMaterial,
-              cut_parts_thickness: data.cutPartsThickness,
+              cut_parts_material: getLabel('cutPartsMaterial', data.cutPartsMaterial),
+              cut_parts_thickness: getLabel('cutPartsThickness', data.cutPartsThickness),
               cut_parts_thickness_other: data.cutPartsThicknessOther,
-              cut_parts_input_type: data.cutPartsInputType,
-              cut_parts_design_by: data.cutPartsDesignBy,
+              cut_parts_input_type: getLabel('cutPartsInputType', data.cutPartsInputType),
+              cut_parts_design_by: getLabel('cutPartsDesignBy', data.cutPartsDesignBy),
               cut_parts_quantity: data.cutPartsQuantity,
               cut_parts_note: data.cutPartsNote,
               // ข้อมูลการจัดส่ง
-              delivery_method: data.deliveryMethod,
+              delivery_method: getLabel('deliveryMethod', data.deliveryMethod),
               delivery_name: data.deliveryName || data.deliveryPickupName || data.deliveryLalamoveName,
               delivery_phone: data.deliveryPhone || data.deliveryPickupPhone || data.deliveryLalamovePhone,
               delivery_address: data.deliveryAddress || data.deliveryLalamoveAddress,
@@ -747,7 +747,7 @@ export const useSignForm = () => {
               install_only_type_other: data.installOnlyTypeOther,
               install_only_details: data.installOnlyDetails,
               install_only_size: data.installOnlySize,
-              install_only_has_power: data.installOnlyHasPower,
+              install_only_has_power: data.installOnlyHasPower === 'yes' ? 'มี' : data.installOnlyHasPower === 'no' ? 'ไม่มี' : null,
               install_only_power_distance: data.installOnlyPowerDistance,
               install_only_date: data.installOnlyDate,
               install_only_time: data.installOnlyTime,
@@ -759,35 +759,36 @@ export const useSignForm = () => {
       };
 
       // สร้างข้อมูลสำหรับส่ง API (ใช้ JSON)
+      // ส่งค่า code สำหรับ ENUM columns และค่าภาษาไทยใน type_details
       const apiData = {
-        sign_type: data.signType,
+        sign_type: data.signType,  // ENUM: plate, non-lit, lit, etc.
         email: data.email,
         name: data.name,
         phone: data.phone,
         line_id: data.lineId,
         shop_name: data.shopName || '-',
         address: data.address,
-        design_file: data.designFile || null,
+        design_file: data.designFile || null,  // ENUM: have, no
         design_file_url: uploadResults.designFileUrl || null,
         design_note: data.designNote || null,
         sign_text: getSignText() || '-',
-        logo_included: toBoolean(data.logo),
+        logo_included: toBoolean(data.logo),  // BOOLEAN
         sign_width_cm: data.signWidth || null,
         sign_height_cm: data.signHeight || null,
         letter_height: letterHeightValue || null,
-        light_color: data.lightColor || null,
+        light_color: data.lightColor || null,  // ENUM: coolwhite, warmwhite, rgb
         light_color_custom: data.lightColorCustom || null,
-        border_material: data.borderMaterial || null,
-        timer_included: toBoolean(data.timer),
+        border_material: data.borderMaterial || null,  // ENUM
+        timer_included: toBoolean(data.timer),  // BOOLEAN
         install_height: data.installHeight || null,
-        install_method: data.installMethod || null,
-        wall_type: data.wallType || null,
-        mount_type: data.mountType || null,
-        old_sign_exists: toBoolean(data.oldSign),
-        site_photo: data.sitePhoto || null,
+        install_method: data.installMethod || null,  // ENUM
+        wall_type: data.wallType || null,  // ENUM
+        mount_type: data.mountType || null,  // ENUM
+        old_sign_exists: toBoolean(data.oldSign),  // BOOLEAN
+        site_photo: data.sitePhoto || null,  // ENUM: yes, visit
         site_photo_url: uploadResults.sitePhotoUrl || null,
         budget_amount: budgetAmount || null,
-        include_installation: toBoolean(data.includeInstall),
+        include_installation: toBoolean(data.includeInstall),  // BOOLEAN
         deadline: data.deadline || null,
         additional_notes: data.note || null,
         // รูปตัวอย่าง
@@ -798,14 +799,28 @@ export const useSignForm = () => {
         site_photo_install_url: uploadResults.sitePhotoInstallUrl || null,
         site_photo_power_url: uploadResults.sitePhotoPowerUrl || null,
         site_photo_surface_url: uploadResults.sitePhotoSurfaceUrl || null,
-        // ข้อมูลเฉพาะตามประเภทงาน (JSONB)
-        type_details: getTypeDetails(),
+        // ข้อมูลเฉพาะตามประเภทงาน (JSONB) - เก็บค่าภาษาไทย
+        type_details: {
+          ...getTypeDetails(),
+          // เพิ่มค่าภาษาไทยสำหรับ reference
+          sign_type_thai: getLabel('signType', data.signType),
+          design_file_thai: getLabel('designFile', data.designFile),
+          light_color_thai: getLabel('lightColor', data.lightColor),
+          border_material_thai: getLabel('borderMaterial', data.borderMaterial),
+          install_method_thai: getLabel('installMethod', data.installMethod),
+          wall_type_thai: getLabel('wallType', data.wallType),
+          mount_type_thai: getLabel('mountType', data.mountType),
+          old_sign_thai: data.oldSign === 'yes' ? 'มี ต้องรื้อก่อน' : 'ไม่มี',
+          logo_thai: data.logo === 'yes' ? 'ใส่โลโก้' : 'ไม่ใส่โลโก้',
+          timer_thai: data.timer === 'yes' ? 'ต้องการ Timer' : 'ไม่ต้องการ',
+          include_install_thai: data.includeInstall === 'yes' ? 'รวมค่าติดตั้ง' : 'นำไปติดเอง',
+        },
         // ข้อมูลสถานที่ติดตั้งใหม่
         install_site_name: data.installSiteName || null,
         install_gps: data.installGps || null,
         install_contact_name: data.installContactName || null,
         install_contact_phone: data.installContactPhone || null,
-        install_site_type: data.installSiteType || null,
+        install_site_type: data.installSiteType || null,  // VARCHAR
         install_site_type_other: data.installSiteTypeOther || null,
         install_height_detail: data.installHeightDetail || null,
         install_access: data.installAccess || null,
@@ -889,12 +904,28 @@ export const useSignForm = () => {
 };
 
 export const radioLabels: Record<string, Record<string, string>> = {
-  signType: { plate: 'ป้ายแผ่น / เนมเพลท / ป้ายหน้าห้อง', 'non-lit': 'งานอักษรไม่ไฟ', lit: 'งานอักษรไฟ', lightbox: 'งานกล่องไฟ', vinyl: 'งานป้ายไวนิล', metal: 'งานเหล็ก / รั้ว / ประตู', facade: 'งานฟาซาด / บังตา / ลายฉลุ' },
+  // Section 2 Type - ประเภทป้าย
+  signType: {
+    plate: 'ป้ายแผ่น / เนมเพลท / ป้ายหน้าห้อง',
+    'non-lit': 'งานอักษรไม่ไฟ',
+    lit: 'งานอักษรไฟ',
+    lightbox: 'งานกล่องไฟ',
+    vinyl: 'งานป้ายไวนิล',
+    metal: 'งานเหล็ก / รั้ว / ประตู',
+    facade: 'งานฟาซาด / บังตา / ลายฉลุ',
+    'block-paint': 'งานบล็อคพ่นสี',
+    'cut-parts': 'งานตัดอะไหล่',
+    'install-only': 'งานติดตั้งอย่างเดียว'
+  },
+  
+  // Section 2 Details
   designFile: { have: 'มีไฟล์แล้ว', no: 'ให้ร้านออกแบบ' },
   logo: { yes: 'ใส่โลโก้', no: 'ไม่ใส่โลโก้' },
   lightColor: { coolwhite: 'ขาว (Cool White)', warmwhite: 'วอร์มไวท์', rgb: 'RGB' },
   borderMaterial: { zinc: 'ขอบซิงค์', alu: 'ขอบอะลูมิเนียม', 'ss-silver': 'สแตนเลสเงินเงา', 'ss-hairline': 'สแตนเลสเงิน Hairline', 'gold-hairline': 'สแตนเลสทอง Hairline', 'gold-mirror': 'สแตนเลสทอง Mirror' },
   timer: { yes: 'ต้องการ Timer', no: 'ไม่ต้องการ' },
+  
+  // Section 4 Install
   installMethod: { stand: 'ยืนติดได้เลย', ladder: 'ใช้บันได', scaffold: 'นั่งร้าน 3 ชั้น', crane: 'รถกระเช้า/เครน', ready: 'มีนั่งร้านพร้อม' },
   wallType: { metalsheet: 'เมทัลชีท', steelframe: 'โครงเหล็ก', marble: 'หินอ่อน', slat: 'ระแนง', ready: 'มีโครงเหล็กรอแล้ว', composite: 'คอมโพสิต' },
   mountType: { wall: 'แนบผนัง', roof: 'โครงเหล็กบนหลังคา', floor: 'โครงเหล็กยึดพื้น' },
@@ -902,8 +933,146 @@ export const radioLabels: Record<string, Record<string, string>> = {
   sitePhoto: { yes: 'มีรูป', visit: 'ให้ร้านไปดูหน้างาน' },
   includeInstall: { yes: 'รวมค่าติดตั้ง', no: 'นำไปติดเอง' },
   installSiteType: { house: 'บ้าน', shophouse: 'อาคารพาณิชย์', shop: 'ร้านค้า', factory: 'โรงงาน', mall: 'ห้าง', office: 'ออฟฟิศ', condo: 'คอนโด', other: 'อื่น ๆ' },
+  
+  // Section 3 Plate - ป้ายแผ่น
+  plateType: { acrylic: 'ป้ายอะคริลิค', etched: 'ป้ายกัดกรด', machine: 'ป้ายเนมเพลทติดเครื่องจักร', room: 'ป้ายหน้าห้อง' },
+  plateMaterial: {
+    'acrylic-clear': 'อะคริลิคใส',
+    'acrylic-white': 'อะคริลิคขาว',
+    'acrylic-black': 'อะคริลิคดำ',
+    'acrylic-color': 'อะคริลิคสี',
+    stainless: 'สแตนเลส',
+    aluminum: 'อลูมิเนียม',
+    brass: 'ทองเหลือง',
+    other: 'อื่น ๆ'
+  },
+  plateThickness: {
+    '2 มม.': '2 มิลลิเมตร',
+    '3 มม.': '3 มิลลิเมตร',
+    '5 มม.': '5 มิลลิเมตร',
+    '10 มม.': '10 มิลลิเมตร'
+  },
+  plateDetail: {
+    'uv-print': 'พิมพ์ UV',
+    screen: 'สกรีน',
+    sticker: 'สติ๊กเกอร์ติด',
+    etched: 'กัดกรด',
+    engrave: 'กัดลาย',
+    laser: 'ยิงเลเซอร์',
+    carve: 'แกะสลัก',
+    other: 'อื่น ๆ'
+  },
+  plateFinish: {
+    'silver-gloss': 'เงินเงา',
+    'silver-hairline': 'เงินแฮร์ไลน์',
+    'gold-gloss': 'ทองเงา',
+    'gold-hairline': 'ทองแฮร์ไลน์',
+    'black-matte': 'ดำด้าน',
+    white: 'ขาว',
+    custom: 'สีพ่นตามแบบ'
+  },
+  plateInstall: { nut: 'เจาะรูน็อต', tape: 'ติดกาวสองหน้า', silicone: 'ติดกาวซิลิโคน', standoff: 'รองเสาลอย', pickup: 'ไม่ติดตั้ง รับเฉพาะชิ้นงาน' },
+  plateDataSame: { same: 'เหมือนกัน', different: 'เปลี่ยนเลข/เปลี่ยนข้อมูลแต่ละชิ้น' },
+  
+  // Section 3 NonLit - งานอักษรไม่ไฟ
+  nonLitType: {
+    pvc: 'อักษรพลาสวูด',
+    acrylic: 'อักษรอะคริลิค',
+    'metal-rim': 'อักษรโลหะยกขอบ',
+    'ss-silver-gloss': 'อักษรสแตนเลสเงินเงา',
+    'ss-silver-hairline': 'อักษรสแตนเลสเงินแฮร์ไลน์',
+    'ss-gold-gloss': 'อักษรสแตนเลสทองเงา',
+    'ss-gold-hairline': 'อักษรสแตนเลสทองแฮร์ไลน์',
+    'ss-acrylic': 'อักษรสแตนเลสรองหลังอะคริลิค'
+  },
+  nonLitMaterial: { pvc: 'พลาสวูด', acrylic: 'อะคริลิค', stainless: 'สแตนเลส', steel: 'เหล็ก', other: 'อื่น ๆ' },
+  nonLitFinish: {
+    'silver-gloss': 'เงินเงา',
+    'silver-hairline': 'เงินแฮร์ไลน์',
+    'gold-gloss': 'ทองเงา',
+    'gold-hairline': 'ทองแฮร์ไลน์',
+    paint: 'พ่นสี',
+    'clear-coat': 'เคลือบใส'
+  },
+  nonLitMaterialThickness: { '3 มม.': '3 มิลลิเมตร', '5 มม.': '5 มิลลิเมตร', '10 มม.': '10 มิลลิเมตร', '15 มม.': '15 มิลลิเมตร', '20 มม.': '20 มิลลิเมตร', 'อื่น ๆ': 'อื่น ๆ' },
+  nonLitBackingShape: { 'follow-letter': 'ตรงตามทรงตัวอักษร', square: 'แผ่นสี่เหลี่ยม', diecut: 'แผ่นไดคัทตามโลโก้' },
+  nonLitInstall: { wall: 'ติดผนัง', glass: 'ติดกระจก', 'steel-frame': 'ติดโครงเหล็ก', composite: 'ติดคอมโพสิต', wood: 'ติดไม้', pickup: 'ไม่ติดตั้ง รับเฉพาะชิ้นงาน' },
+  nonLitExtras: { layout: 'แบบวางตำแหน่งติดตั้ง', template: 'Template เจาะติดตั้ง', frame: 'โครงรองหลัง', spacer: 'เว้นระยะลอยจากผนัง' },
+  
+  // Section 3 Lit - งานอักษรไฟ
+  litType: {
+    'aluminum-rim': 'อักษรไฟสว่างหน้า ขอบอะลูมิเนียม',
+    'zinc-rim': 'อักษรไฟสว่างหน้า ขอบซิงค์พ่นสี',
+    'ss-silver-gloss': 'อักษรไฟสว่างหน้า ขอบสแตนเลสเงินเงา',
+    'ss-silver-hairline': 'อักษรไฟสว่างหน้า ขอบสแตนเลสเงินแฮร์ไลน์',
+    'ss-gold-gloss': 'อักษรไฟสว่างหน้า ขอบสแตนเลสทองเงา',
+    'ss-gold-hairline': 'อักษรไฟสว่างหน้า ขอบสแตนเลสทองแฮร์ไลน์'
+  },
+  litAcrylicColor: { 'milky-white': 'ขาวนม', white: 'ขาว', black: 'ดำ', red: 'สีแดง', blue: 'สีน้ำเงิน', green: 'สีเขียว', yellow: 'สีเหลือง', other: 'อื่น ๆ' },
+  litLightColor: { 'warm-white': 'Warm White', daylight: 'Daylight', 'cool-white': 'Cool White', red: 'แดง', blue: 'น้ำเงิน', green: 'เขียว', yellow: 'เหลือง', rgb: 'RGB เปลี่ยนสี' },
+  litSystem: { 'led-module': 'LED Module', 'led-strip': 'LED Strip', adapter: 'Adapter', transformer: 'หม้อแปลง', timer: 'Timer', remote: 'รีโมท', app: 'แอปควบคุม' },
+  litUsage: { indoor: 'ภายใน', 'outdoor-covered': 'ภายนอก มีหลังคา', 'outdoor-exposed': 'ภายนอก โดนแดด/ฝน' },
+  litInstall: { wall: 'ติดผนัง', frame: 'ติดโครง', composite: 'ติดคอมโพสิต', storefront: 'ติดหน้าร้าน', mall: 'ติดในห้าง', 'no-install': 'ไม่ติดตั้ง' },
+  litHasPower: { yes: 'มี', no: 'ไม่มี' },
+  litWiring: { yes: 'ต้องการ', no: 'ไม่ต้องการ' },
+  
+  // Section 3 Lightbox - งานกล่องไฟ
+  lightboxType: { round: 'กล่องไฟวงกลม', square: 'กล่องไฟสี่เหลี่ยม', diecut: 'กล่องไฟไดคัท' },
+  lightboxSides: { '1-side': '1 หน้า', '2-side': '2 หน้า' },
+  lightboxFrame: { steel: 'เหล็ก', stainless: 'สแตนเลส', aluminum: 'อลูมิเนียม', zinc: 'ซิงค์', other: 'อื่น ๆ' },
+  lightboxFace: { acrylic: 'อะคริลิค', flex: 'Flex', 'translucent-sticker': 'สติ๊กเกอร์โปร่งแสง', 'uv-print': 'พิมพ์ UV', perforated: 'เจาะทะลุ', 'diecut-logo': 'ไดคัทโลโก้' },
+  lightboxLightSystem: { 'led-module': 'LED Module', 'led-strip': 'LED Strip', 'warm-white': 'Warm White', daylight: 'Daylight', rgb: 'RGB' },
+  lightboxPosition: { storefront: 'ติดหน้าร้าน', projecting: 'ติดยื่นออกจากผนัง', hanging: 'แขวน', floor: 'ตั้งพื้น', pole: 'ติดเสา' },
+  lightboxBracket: { yes: 'ต้องการ', no: 'ไม่ต้องการ' },
+  
+  // Section 3 Vinyl - งานป้ายไวนิล
+  vinylType: { banner: 'ป้ายไวนิลธรรมดา', 'backlit-banner': 'ป้ายไวนิล Backlit', sticker: 'สติ๊กเกอร์ติดกระจก', 'floor-sticker': 'สติ๊กเกอร์ติดพื้น', 'vehicle-wrap': 'สติ๊กเกอร์ติดรถ' },
+  vinylMaterialType: { 'vinyl-440g': 'ไวนิล 440g', 'vinyl-340g': 'ไวนิล 340g', 'vinyl-280g': 'ไวนิล 280g', backlit: 'Backlit', 'sticker-matte': 'สติ๊กเกอร์ด้าน', 'sticker-gloss': 'สติ๊กเกอร์เงา', 'sticker-clear': 'สติ๊กเกอร์ใส', other: 'อื่น ๆ' },
+  vinylPrintQuality: { standard: 'มาตรฐาน', high: 'สูง (High Res)', photo: 'ระดับภาพถ่าย' },
+  vinylFinish: { hem: 'พับขอบ', eyelets: 'ตอกตาไก่', holes: 'เจาะรู', sew: 'เย็บขอบ', 'aluminum-frame': 'เข้าคิ้วอลูมิเนียม', other: 'อื่น ๆ' },
+  vinylInstallType: { install: 'ติดตั้ง', 'no-install': 'ไม่ติดตั้ง' },
+  vinylSurface: { wall: 'ผนัง', glass: 'กระจก', floor: 'พื้น', vehicle: 'รถยนต์' },
+  
+  // Section 3 Metal - งานเหล็ก
+  metalType: { fence: 'รั้วเหล็ก', gate: 'ประตูเหล็ก', 'steel-structure': 'โครงสร้างเหล็ก', railing: 'ราวบันได/ราวกันตก', canopy: 'หลังคาเหล็ก' },
+  metalMaterial: { steel: 'เหล็กดำ', galvanized: 'เหล็กกัลวาไนซ์', stainless: 'สแตนเลส', aluminum: 'อลูมิเนียม' },
+  metalThickness: { '1.2 มม.': '1.2 มิลลิเมตร', '1.5 มม.': '1.5 มิลลิเมตร', '2.0 มม.': '2.0 มิลลิเมตร', '2.3 มม.': '2.3 มิลลิเมตร', '3.2 มม.': '3.2 มิลลิเมตร', 'อื่น ๆ': 'อื่น ๆ' },
+  metalSurfacePrep: { solid: 'ทึบ', slat: 'ระแนง', mesh: 'ตาข่าย', pattern: 'ลายฉลุ', scroll: 'ลายดัด', mixed: 'ผสม' },
+  metalCoating: { galvanized: 'ชุบกัลวาไนซ์', paint: 'พ่นสี', 'powder-coat': 'เคลือบผง', none: 'ไม่ชุบ' },
+  metalInstallType: { ground: 'ฝังพื้น', wall: 'ยึดผนัง', concrete: 'เทคานคอนกรีต', existing: 'ติดตั้งบนโครงสร้างเดิม' },
+  metalAccessories: { lock: 'กุญแจ/ล็อค', hinge: 'บานพับพิเศษ', wheel: 'ล้อเลื่อน', motor: 'มอเตอร์ประตูอัตโนมัติ', intercom: 'กริ่ง/อินเตอร์คอม' },
+  
+  // Section 3 Facade - งานฟาซาด
+  facadeType: { cnc: 'ฟาซาดลายฉลุ CNC', slat: 'บังตา/ระแนง', composite: 'คอมโพสิต', 'block-paint': 'บล็อคพ่นสี', 'cut-parts': 'ตัดอะไหล่' },
+  
+  // Section 3 Block Paint - งานบล็อคพ่นสี
+  blockPaintMaterial: { 'zinc-0.5': 'สังกะสี 0.5 มิลลิเมตร', 'zinc-0.8': 'สังกะสี 0.8 มิลลิเมตร', 'zinc-1.0': 'สังกะสี 1.0 มิลลิเมตร', other: 'อื่น ๆ' },
+  
+  // Section 3 Cut Parts - งานตัดอะไหล่
+  cutPartsMaterial: { steel: 'เหล็ก', stainless: 'สแตนเลส', aluminum: 'อะลูมิเนียม' },
+  cutPartsThickness: { '0.5': '0.5 มิลลิเมตร', '0.8': '0.8 มิลลิเมตร', '1.0': '1.0 มิลลิเมตร', '1.2': '1.2 มิลลิเมตร', '1.5': '1.5 มิลลิเมตร', '2.0': '2.0 มิลลิเมตร', '3.0': '3.0 มิลลิเมตร', '5.0': '5.0 มิลลิเมตร' },
+  cutPartsInputType: { file: 'ส่งไฟล์', sample: 'ส่งงานจริง' },
+  cutPartsDesignBy: { 'shop-design': 'ร้านทำแบบให้', 'customer-design': 'แจ้ง ก ย (ลูกค้ามีแบบ)' },
+  
+  // Delivery
+  deliveryMethod: { pickup: 'รับที่ร้าน', delivery: 'จัดส่ง', lalamove: 'เรียก Lalamove' },
 };
 
 export const getLabel = (field: string, value: string) => {
   return radioLabels[field]?.[value] || value || '—';
+};
+
+// Helper function to convert values to Thai labels for database storage
+export const getThaiLabel = (field: string, value: string): string => {
+  if (!value) return '';
+  
+  // Handle comma-separated values (checkbox groups)
+  if (value.includes(',')) {
+    return value.split(',')
+      .map(v => getLabel(field, v.trim()))
+      .filter(v => v && v !== '—')
+      .join(', ');
+  }
+  
+  return getLabel(field, value);
 };
