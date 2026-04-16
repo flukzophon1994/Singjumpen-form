@@ -11,10 +11,10 @@ const Section1Contact = ({ data, update }: Props) => (
   <div className="animate-slide-in">
     <div className="mb-8">
       <div className="inline-block font-heading text-[10px] font-semibold tracking-[3px] uppercase text-primary bg-primary/10 px-3 py-1 rounded mb-3">
-        ขั้นตอนที่ 01 / 04
+        รับใบเสนอราคา (3/3)
       </div>
-      <div className="font-heading text-[28px] font-bold text-foreground mb-1.5 leading-tight">ข้อมูลติดต่อ</div>
-      <div className="text-sm text-muted-foreground">กรอกข้อมูลเพื่อให้ทีมงานติดต่อกลับและส่งใบเสนอราคาได้ถูกต้อง</div>
+      <div className="font-heading text-[28px] font-bold text-foreground mb-1.5 leading-tight">รับประเมินราคาฟรี ไม่มีค่าใช้จ่าย!</div>
+      <div className="text-sm text-muted-foreground">กรอกข้อมูลเพื่อให้ทีมงานประเมินราคาและส่งแบบให้คุณพิจารณา</div>
     </div>
 
     <FormCard heading="ผู้ติดต่อ">

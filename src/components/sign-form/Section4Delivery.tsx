@@ -12,7 +12,7 @@ const Section4Delivery = ({ data, update }: Props) => {
     <div className="animate-slide-in">
       <div className="mb-8">
         <div className="inline-block font-heading text-[10px] font-semibold tracking-[3px] uppercase text-primary bg-primary/10 px-3 py-1 rounded mb-3">
-          ขั้นตอนที่ 04 / 05 • การรับสินค้า
+          ข้อมูลจัดส่ง (2/3)
         </div>
         <div className="font-heading text-[28px] font-bold text-foreground mb-1.5 leading-tight">การรับสินค้า/จัดส่ง</div>
         <div className="text-sm text-muted-foreground">เลือกวิธีการรับสินค้าหรือจัดส่งที่ต้องการ</div>

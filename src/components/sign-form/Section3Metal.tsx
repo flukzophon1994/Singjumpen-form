@@ -26,7 +26,7 @@ const Section3Metal = ({ data, update, updateFile }: Props) => {
     <div className="animate-slide-in">
       <div className="mb-8">
         <div className="inline-block font-heading text-[10px] font-semibold tracking-[3px] uppercase text-primary bg-primary/10 px-3 py-1 rounded mb-3">
-          ขั้นตอนที่ 03 / 05 • งานเหล็ก/รั้ว/ประตู
+          ระบุรายละเอียดงาน (2/3) • งานเหล็ก/รั้ว/ประตู
         </div>
         <div className="font-heading text-[28px] font-bold text-foreground mb-1.5 leading-tight">รายละเอียดงานเหล็ก</div>
         <div className="text-sm text-muted-foreground">กรอกข้อมูลเฉพาะงานเหล็ก รั้ว และประตู</div>

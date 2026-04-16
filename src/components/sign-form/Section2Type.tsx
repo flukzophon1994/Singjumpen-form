@@ -141,10 +141,10 @@ const Section2Type = ({ data, update }: Props) => {
     <div className="animate-slide-in">
       <div className="mb-8">
         <div className="inline-block font-heading text-[10px] font-semibold tracking-[3px] uppercase text-primary bg-primary/10 px-3 py-1 rounded mb-3">
-          ขั้นตอนที่ 02 / 05
+          ออกแบบป้ายของคุณ (1/3)
         </div>
-        <div className="font-heading text-[28px] font-bold text-foreground mb-1.5 leading-tight">ประเภทงาน</div>
-        <div className="text-sm text-muted-foreground">เลือกประเภทงานที่ต้องการให้ร้านทำให้</div>
+        <div className="font-heading text-[28px] font-bold text-foreground mb-1.5 leading-tight">เลือกประเภทป้าย</div>
+        <div className="text-sm text-muted-foreground">เริ่มต้นด้วยการเลือกแบบป้ายที่ใกล้เคียงกับความต้องการของคุณ</div>
       </div>
 
       <FormCard heading="เลือกประเภทงาน">

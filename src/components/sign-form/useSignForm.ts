@@ -886,9 +886,8 @@ export const useSignForm = () => {
   };
 
   const next = () => {
-    if (step < 5) setStep(step + 1);
-    if (step < 5) {
-      // Just advance step
+    if (step < 3) {
+      setStep(step + 1);
     } else {
       submitForm();
     }

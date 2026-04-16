@@ -34,7 +34,7 @@ const NavBar = ({ step, totalSteps, onBack, onNext, isSubmitting, submitError }:
         >
           {isSubmitting
             ? 'กำลังส่งข้อมูล...'
-            : (step === totalSteps ? 'ส่งข้อมูล ✓' : 'ถัดไป →')
+            : (step === totalSteps ? 'ขอรับใบเสนอราคาฟรี' : 'ถัดไป →')
           }
         </button>
       </div>

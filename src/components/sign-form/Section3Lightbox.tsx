@@ -25,7 +25,7 @@ const Section3Lightbox = ({ data, update, updateFile }: Props) => {
     <div className="animate-slide-in">
       <div className="mb-8">
         <div className="inline-block font-heading text-[10px] font-semibold tracking-[3px] uppercase text-primary bg-primary/10 px-3 py-1 rounded mb-3">
-          ขั้นตอนที่ 03 / 05 • งานกล่องไฟ
+          ระบุรายละเอียดงาน (2/3) • งานกล่องไฟ
         </div>
         <div className="font-heading text-[28px] font-bold text-foreground mb-1.5 leading-tight">รายละเอียดกล่องไฟ</div>
         <div className="text-sm text-muted-foreground">กรอกข้อมูลเฉพาะงานกล่องไฟ</div>
