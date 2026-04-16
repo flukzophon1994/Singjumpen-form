@@ -84,8 +84,8 @@ const Index = () => {
             )}
             {step === 3 && (
               <>
-                <Section5Budget data={data} update={update} />
                 <Section1Contact data={data} update={update} />
+                <Section5Budget data={data} update={update} />
               </>
             )}
           </main>

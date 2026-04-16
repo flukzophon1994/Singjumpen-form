@@ -289,14 +289,6 @@ const Section5Budget = ({ data, update }: Props) => {
 
   return (
     <div className="animate-slide-in">
-      <div className="mb-8">
-        <div className="inline-block font-heading text-[10px] font-semibold tracking-[3px] uppercase text-primary bg-primary/10 px-3 py-1 rounded mb-3">
-          สรุปและรับใบเสนอราคา (3/3)
-        </div>
-        <div className="font-heading text-[28px] font-bold text-foreground mb-1.5 leading-tight">งบประมาณ & กำหนดการ</div>
-        <div className="text-sm text-muted-foreground">ช่วยให้ทีมงานเสนอแผนที่เหมาะสมที่สุดกับงบของคุณ</div>
-      </div>
-
       <FormCard heading="งบประมาณ">
         <FieldGroup label="ช่วงงบประมาณโดยประมาณ" required>
           <div className="grid grid-cols-4 gap-2 max-[380px]:grid-cols-3">
